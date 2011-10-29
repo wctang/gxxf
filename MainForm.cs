@@ -101,7 +101,15 @@ namespace gxxf {
             String s = o.ToString();
             if (s.Length == 0)
                 return 0;
-            return Int32.Parse(s);
+            if (s.Equals("Y") || s.Equals("y"))
+                return 1;
+            if (s.Equals("N") || s.Equals("n"))
+                return 0;
+            try {
+                return Int32.Parse(s);
+            } catch (Exception e) {
+                return 0;
+            }
         }
         private bool DrSet(DataRow dr, DataColumn c, int i) {
             if (dr == null)
@@ -171,6 +179,7 @@ namespace gxxf {
             username = tbUsername.Text;
             password = tbPassword.Text;
             tabMain.Visible = true;
+            panelDetail.Visible = true;
             panelLogin.Visible = false;
         }
 
@@ -179,21 +188,15 @@ namespace gxxf {
             if (tabMain.SelectedIndex == 0) {
                 mode = 0;
                 lbCustomers.Parent = tabPage1;
-                panelCustomerDetail.Parent = tabPage1;
-                panelTicketDetail.Parent = tabPage1;
                 ticketDataGridView.Parent = tabPage1;
                 customerBindingSource_CurrentChanged(sender, e);
             } else if (tabMain.SelectedIndex == 1) {
                 mode = 1;
                 lbCustomers.Parent = tabPage2;
-                panelCustomerDetail.Parent = tabPage2;
-                panelTicketDetail.Parent = tabPage2;
                 ticketDataGridView.Parent = tabPage2;
                 ticketBindingSource_CurrentChanged(sender, e);
             } else if (tabMain.SelectedIndex == 2) {
                 mode = 2;
-                panelCustomerDetail.Parent = tabPage5;
-                panelTicketDetail.Parent = tabPage5;
                 ticketDataGridView.Parent = tabPage5;
             }
         }
@@ -365,6 +368,7 @@ namespace gxxf {
             DataRowView drv = (DataRowView)ticketJacketBindingSource.Current;
             DataRow dr = (drv == null) ? null : drv.Row;
 
+            cbIfWashing.SelectedIndex = DrGetInt(dr, this.gxxfDataSet.TicketJacket.IfWashingColumn);
             tbJianKuan.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.JianKuanColumn);
             cbJianKuanP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.JianKuanPColumn);
             tbShangWei.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.ShangWeiColumn);
@@ -393,6 +397,7 @@ namespace gxxf {
             DataRowView drv = (DataRowView)ticketTrousersBindingSource.Current;
             DataRow dr = (drv == null) ? null : drv.Row;
 
+            cbKuIfWashing.SelectedIndex = DrGetInt(dr, this.gxxfDataSet.TicketTrousers.IfWashingColumn);
             tbKuYao.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KuYaoColumn);
             cbKuYaoP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KuYaoPColumn);
             tbKuXiaWei.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.XiaWeiColumn);
