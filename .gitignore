@@ -3,4 +3,6 @@ obj/*
 bin
 bin/*
 *.suo
+gxxfDataSet.Designer.cs
+Properties/*.Designer.cs
 
