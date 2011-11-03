@@ -354,6 +354,8 @@
             this.showCompanyAddress = new System.Windows.Forms.TextBox();
             this.showCompanyName = new System.Windows.Forms.TextBox();
             this.showCustomerName = new System.Windows.Forms.TextBox();
+            this.btnTicketDelete = new System.Windows.Forms.Button();
+            this.btnCustomerDelete = new System.Windows.Forms.Button();
             this.tabMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCustomerTicket)).BeginInit();
@@ -1106,7 +1108,7 @@
             // 
             // reportBindingSource
             // 
-            this.reportBindingSource.DataSource = typeof(gxxf.Report);
+            this.reportBindingSource.DataSource = typeof(gxxf.MainForm.Report);
             this.reportBindingSource.CurrentChanged += new System.EventHandler(this.reportBindingSource_CurrentChanged);
             // 
             // btnUpdateReport
@@ -3889,7 +3891,9 @@
             // 
             // panelMain
             // 
+            this.panelMain.Controls.Add(this.btnCustomerDelete);
             this.panelMain.Controls.Add(this.btnCustomerNew);
+            this.panelMain.Controls.Add(this.btnTicketDelete);
             this.panelMain.Controls.Add(this.btnTicketNew);
             this.panelMain.Controls.Add(this.btnEdit);
             this.panelMain.Controls.Add(this.tabMain);
@@ -4207,6 +4211,28 @@
             this.showCustomerName.Size = new System.Drawing.Size(230, 25);
             this.showCustomerName.TabIndex = 32;
             this.showCustomerName.TabStop = false;
+            // 
+            // btnTicketDelete
+            // 
+            this.btnTicketDelete.AutoSize = true;
+            this.btnTicketDelete.Location = new System.Drawing.Point(1016, 12);
+            this.btnTicketDelete.Name = "btnTicketDelete";
+            this.btnTicketDelete.Size = new System.Drawing.Size(125, 34);
+            this.btnTicketDelete.TabIndex = 1;
+            this.btnTicketDelete.Text = "刪除訂單";
+            this.btnTicketDelete.UseVisualStyleBackColor = true;
+            this.btnTicketDelete.Click += new System.EventHandler(this.btnTicketDelete_Click);
+            // 
+            // btnCustomerDelete
+            // 
+            this.btnCustomerDelete.AutoSize = true;
+            this.btnCustomerDelete.Location = new System.Drawing.Point(1149, 12);
+            this.btnCustomerDelete.Name = "btnCustomerDelete";
+            this.btnCustomerDelete.Size = new System.Drawing.Size(125, 34);
+            this.btnCustomerDelete.TabIndex = 1;
+            this.btnCustomerDelete.Text = "刪除顧客";
+            this.btnCustomerDelete.UseVisualStyleBackColor = true;
+            this.btnCustomerDelete.Click += new System.EventHandler(this.btnCustomerDelete_Click);
             // 
             // MainForm
             // 
@@ -4593,6 +4619,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Birthday;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.TextBox showRemark;
+        private System.Windows.Forms.Button btnCustomerDelete;
+        private System.Windows.Forms.Button btnTicketDelete;
     }
 }
 

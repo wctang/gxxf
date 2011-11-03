@@ -187,6 +187,24 @@ namespace gxxf {
             MaskedTextBox tb = (MaskedTextBox)sender;
             tb.BackColor = Color.Yellow;
         }
+        private bool checkPassword() {
+            Form prompt = new Form();
+            prompt.Width = 150;
+            prompt.Height = 90;
+            prompt.Text = "請輸入密碼";
+            TextBox textBox = new TextBox() { Left = 10, Top = 10, Width = 100, UseSystemPasswordChar = true };
+            Button confirmation = new Button() { Left = 10, Top = 30, Width = 40, Text = "Ok" };
+            confirmation.Click += (s, ee) => { prompt.Close(); };
+            prompt.Controls.Add(textBox);
+            prompt.Controls.Add(confirmation);
+            prompt.ShowDialog();
+
+            if (!textBox.Text.Equals(password)) {
+                MessageBox.Show("密碼錯誤");
+                return false;
+            }
+            return true;
+        }
 
         // Login
         private void btnLogin_Click(object sender, EventArgs e) {
@@ -432,6 +450,16 @@ namespace gxxf {
 
 
         // Report
+        public class Report {
+            public Report() { }
+            public String OrderDate { get; set; }
+            public int TicketCount { get; set; }
+            public int TotalPrice { get; set; }
+            public int Earnest { get; set; }
+            public int AccountReceived { get; set; }
+            public int Carry { get; set; }
+            public int Payoff { get; set; }
+        }
         private void reportQueryInit() {
             reportQueryRefresh();
         }
@@ -545,6 +573,7 @@ namespace gxxf {
 
             btnEdit.Enabled = (dr != null);
             btnTicketNew.Enabled = (dr != null);
+            btnCustomerDelete.Enabled = (dr != null);
 
             if (dr == null)
                 return null;
@@ -574,6 +603,8 @@ namespace gxxf {
                 showIfCarry.Text = DrGetInt(dr, this.gxxfDataSet.Ticket.IfCarryColumn) == 0 ? "未取件" : "已取件";
                 showIfPayoff.Text = DrGetInt(dr, this.gxxfDataSet.Ticket.IfPayoffColumn) == 0 ? "未付清" : "已付清";
             }
+
+            btnTicketDelete.Enabled = (dr != null);
 
             return dr;
         }
@@ -1096,24 +1127,10 @@ namespace gxxf {
         }
 
         private void unmask_DoubleClick(object sender, EventArgs e) {
-            Form prompt = new Form();
-            prompt.Width = 150;
-            prompt.Height = 90;
-            prompt.Text = "請輸入密碼";
-            TextBox textBox = new TextBox() { Left = 10, Top = 10, Width = 100, UseSystemPasswordChar = true };
-            Button confirmation = new Button() { Left = 10, Top = 30, Width = 40, Text = "Ok" };
-            confirmation.Click += (s, ee) => { prompt.Close(); };
-            prompt.Controls.Add(textBox);
-            prompt.Controls.Add(confirmation);
-            prompt.ShowDialog();
-
-            if (!textBox.Text.Equals(password)) {
-                MessageBox.Show("密碼錯誤");
-                return;
+            if (checkPassword()) {
+                TextBox tb = (TextBox)sender;
+                tb.UseSystemPasswordChar = false;
             }
-
-            TextBox tb = (TextBox)sender;
-            tb.UseSystemPasswordChar = false;
         }
 
         private void edit_Enter(object sender, EventArgs e) {
@@ -1126,59 +1143,69 @@ namespace gxxf {
         }
 
 
+        private void deleteTicket(DataRow dr) {
+            String tid = DrGetStr(dr, this.gxxfDataSet.Ticket.TicketIdColumn);
 
-/*
-        private void btnCustomerDelete_Click(object sender, EventArgs e) {
-            DataRowView drv = (DataRowView)customerBindingSource.Current;
-            if (drv == null) {
-                MessageBox.Show("無選定顧客，無法刪除");
-                return;
+            dr.Delete();
+            ticketTableAdapter.Update(dr);
+
+            DataRow[] rows = gxxfDataSet.TicketJacket.Select("TicketId = '" + tid + "'");
+            foreach (DataRow r in rows) {
+                r.Delete();
+                ticketJacketTableAdapter.Update(r);
             }
 
-            drv.Delete();
-            if (customerTableAdapter.Update(drv.Row) > 0) {
-                MessageBox.Show("刪除成功");
+            rows = gxxfDataSet.TicketTrousers.Select("TicketId = '" + tid + "'");
+            foreach (DataRow r in rows) {
+                r.Delete();
+                ticketTrousersTableAdapter.Update(r);
             }
         }
-
         private void btnTicketDelete_Click(object sender, EventArgs e) {
             DataRowView drv = (DataRowView)ticketBindingSource.Current;
-            if (drv == null) {
-                MessageBox.Show("無選定訂單，無法刪除");
+            if (drv == null)
                 return;
+
+            DataRow dr = drv.Row;
+
+            if (MessageBox.Show("確定要刪除訂單 " + DrGetStr(dr, gxxfDataSet.Ticket.TicketCodeColumn) + "?", "刪除訂單", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
+            if (!checkPassword())
+                return;
+
+            using (System.Transactions.TransactionScope updateTransaction = new System.Transactions.TransactionScope()) {
+                deleteTicket(dr);
+                updateTransaction.Complete();
             }
-
-            String tid = DrGetStr(drv.Row, this.gxxfDataSet.Ticket.TicketIdColumn);
-            drv.Row.Delete();
-            if (ticketTableAdapter.Update(drv.Row) > 0) {
-                DataRow[] rows = gxxfDataSet.TicketJacket.Select("TicketId = '" + tid + "'");
-                foreach (DataRow r in rows) {
-                    r.Delete();
-                    ticketJacketTableAdapter.Update(r);
-                }
-
-                rows = gxxfDataSet.TicketTrousers.Select("TicketId = '" + tid + "'");
-                foreach (DataRow r in rows) {
-                    r.Delete();
-                    ticketTrousersTableAdapter.Update(r);
-                }
-
-                MessageBox.Show("刪除成功");
-            }
+            MessageBox.Show("刪除成功");
         }
-*/
 
-    }
+        private void btnCustomerDelete_Click(object sender, EventArgs e) {
+            DataRowView drv = (DataRowView)customerBindingSource.Current;
+            if (drv == null)
+                return;
 
-    public class Report {
-        public Report() { }
-        public String OrderDate { get; set; }
-        public int TicketCount { get; set; }
-        public int TotalPrice { get; set; }
-        public int Earnest { get; set; }
-        public int AccountReceived { get; set; }
-        public int Carry { get; set; }
-        public int Payoff { get; set; }
+            DataRow dr = drv.Row;
+            if (MessageBox.Show("確定要刪除顧客 " + DrGetStr(dr, gxxfDataSet.Customer.CustomerNameColumn) + " 和其所有的訂單?", "刪除顧客", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
+            if (!checkPassword())
+                return;
+
+            using (System.Transactions.TransactionScope updateTransaction = new System.Transactions.TransactionScope()) {
+                String cid = DrGetStr(dr, this.gxxfDataSet.Customer.customeridColumn);
+
+                dr.Delete();
+                customerTableAdapter.Update(dr);
+
+                DataRow[] rows = gxxfDataSet.Ticket.Select("CustomerId = '" + cid + "'");
+                foreach (DataRow r in rows) {
+                    deleteTicket(r);
+                }
+
+                updateTransaction.Complete();
+            }
+            MessageBox.Show("刪除成功");
+        }
     }
 }
 
