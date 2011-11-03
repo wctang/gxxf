@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
-using System.Globalization;
+using System.Data.SqlClient;
 
 namespace gxxf {
     public partial class MainForm : Form {
@@ -29,14 +28,11 @@ namespace gxxf {
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
-            // TODO
-            //CultureInfo twCulture = new CultureInfo("zh-tw");
-            //twCulture.DateTimeFormat.Calendar = new System.Globalization.TaiwanCalendar();
-            //System.Threading.Thread.CurrentThread.CurrentCulture = twCulture;
-            //System.Threading.Thread.CurrentThread.CurrentUICulture = twCulture;
-
             this.appUserTableAdapter.Fill(this.gxxfDataSet.AppUser);
             this.parameterTableAdapter.Fill(this.gxxfDataSet.Parameter);
+
+            dgvCustomerTicket.BindingContext = new BindingContext();
+            dgvQueryTicket.BindingContext = new BindingContext();
 
             setupParameter(cbJianKuanP);
             setupParameter(cbShangWeiP);
@@ -62,11 +58,6 @@ namespace gxxf {
             setupParameter(cbLaLianP);
             setupParameter(cbYaoDaiP);
 
-            cbQueryIfCarry.SelectedIndex = 0;
-            ckQueryIfCarry.Checked = false;
-            cbQueryIfPayoff.SelectedIndex = 0;
-            ckQueryIfPayoff.Checked = false;
-
             init = true;
         }
 
@@ -74,11 +65,54 @@ namespace gxxf {
         private String DateToStr(DateTime d) {
             return String.Format("{0:000}-{1:00}-{2:00}", d.Year - 1911, d.Month, d.Day);
         }
+        private String ValidateDate(String datestr) {
+            if (datestr != null && datestr.Equals("   -  -"))
+                return "";
+
+            string pattern = "^(\\d{1,})-(\\d{1,})-(\\d{1,})$";
+            Match m = Regex.Match(datestr, pattern);
+            if (!m.Success)
+                return null;
+
+            int y = Int32.Parse(m.Groups[1].Value);
+            int mm = Int32.Parse(m.Groups[2].Value);
+            int d = Int32.Parse(m.Groups[3].Value);
+            if (y > 150)
+                return null;
+            if (mm > 12 || mm < 1)
+                return null;
+            if (d > 31 || d < 1)
+                return null;
+            return String.Format("{0:000}-{1:00}-{2:00}", y, mm, d);
+        }
+        private int ValidateMoney(String str) {
+            if (str != null && str.Trim().Length == 0)
+                return 0;
+            return Int32.Parse(str);
+        }
         private String DrGetStr(DataRow dr, DataColumn c) {
             if (dr == null)
                 return "";
             Object o = dr[c];
             return o == null || (o is System.DBNull) ? "" : o.ToString();
+        }
+        private void DrGet(DataRow dr, DataColumn c, TextBox tb, bool clear = false) {
+            if (clear) {
+                tb.Text = "";
+                tb.Enabled = true;
+            } else {
+                tb.Text = DrGetStr(dr, c);
+                tb.Enabled = (dr != null);
+            }
+        }
+        private void DrGet(DataRow dr, DataColumn c, ComboBox cb, bool clear = false) {
+            if (clear) {
+                cb.Text = "";
+                cb.Enabled = true;
+            } else {
+                cb.Text = DrGetStr(dr, c);
+                cb.Enabled = (dr != null);
+            }
         }
         private bool DrSet(DataRow dr, DataColumn c, String s) {
             if (dr == null)
@@ -106,8 +140,8 @@ namespace gxxf {
             if (s.Equals("N") || s.Equals("n"))
                 return 0;
             try {
-                return Int32.Parse(s);
-            } catch (Exception e) {
+                return ValidateMoney(s);
+            } catch (Exception) {
                 return 0;
             }
         }
@@ -119,28 +153,14 @@ namespace gxxf {
             dr[c] = i;
             return true;
         }
-        private void DrGetDate(DataRow dr, DataColumn c, DateTimePicker dtp, CheckBox ck) {
-            string pattern = "^(\\d{1,})-(\\d{1,})-(\\d{1,})$";
-
-            bool check = false;
-            DateTime dt = DateTime.Today;
-
-            if (dr != null) {
-                Object o = dr[c];
-                if (o != null && !(o is System.DBNull)) {
-                    String s = o.ToString();
-                    Match m = Regex.Match(s, pattern);
-                    if (m.Success) {
-                        int y = Int32.Parse(m.Groups[1].Value) + 1911;
-                        int mm = Int32.Parse(m.Groups[2].Value);
-                        int d = Int32.Parse(m.Groups[3].Value);
-                        check = true;
-                        dt = new DateTime(y, mm, d);
-                    }
-                }
+        private void DrGet(DataRow dr, DataColumn c, MaskedTextBox mtb) {
+            String s = ValidateDate(DrGetStr(dr, c));
+            if (s == null) {
+                mtb.Text = "";
+            } else {
+                mtb.Text = s;
             }
-            ck.Checked = check;
-            dtp.Value = dt;
+            mtb.Enabled = (dr != null);
         }
         private bool DrSet(DataRow dr, DataColumn c, DateTimePicker dtp, CheckBox ck) {
             if (dr == null)
@@ -155,6 +175,18 @@ namespace gxxf {
             }
             return DrSet(dr, c, val);
         }
+        private void mtbDate_Validated(object sender, EventArgs e) {
+            MaskedTextBox tb = (MaskedTextBox)sender;
+            if (ValidateDate(tb.Text) == null) {
+                tb.BackColor = Color.Red;
+            } else {
+                tb.BackColor = Color.White;
+            }
+        }
+        private void mtbDate_Enter(object sender, EventArgs e) {
+            MaskedTextBox tb = (MaskedTextBox)sender;
+            tb.BackColor = Color.Yellow;
+        }
 
         // Login
         private void btnLogin_Click(object sender, EventArgs e) {
@@ -168,7 +200,7 @@ namespace gxxf {
             Cursor.Current = Cursors.WaitCursor;
             this.customerBindingSource.Filter = "1 <> 1";
             this.customerTableAdapter.Fill(this.gxxfDataSet.Customer);
-            this.ticketBindingSource.Filter = "1 <> 1";
+            changeTicketFilter(null, null);
             this.ticketTableAdapter.Fill(this.gxxfDataSet.Ticket);
             this.ticketTrousersBindingSource.Filter = "1 <> 1";
             this.ticketTrousersTableAdapter.Fill(this.gxxfDataSet.TicketTrousers);
@@ -178,41 +210,54 @@ namespace gxxf {
 
             username = tbUsername.Text;
             password = tbPassword.Text;
-            tabMain.Visible = true;
-            panelDetail.Visible = true;
             panelLogin.Visible = false;
+            panelMain.Visible = true;
+            panelEdit.Visible = false;
+
+            customerQueryInit();
+
+            showCurrentCustomer();
+            showCurrentTicket();
+            showCurrentTicketJacket();
+            showCurrentTicketTrousers();
         }
 
         // tab switch
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e) {
             if (tabMain.SelectedIndex == 0) {
                 mode = 0;
-                lbCustomers.Parent = tabPage1;
-                ticketDataGridView.Parent = tabPage1;
-                customerBindingSource_CurrentChanged(sender, e);
+                customerQueryInit();
             } else if (tabMain.SelectedIndex == 1) {
                 mode = 1;
-                lbCustomers.Parent = tabPage2;
-                ticketDataGridView.Parent = tabPage2;
-                ticketBindingSource_CurrentChanged(sender, e);
+                ticketQueryInit();
             } else if (tabMain.SelectedIndex == 2) {
                 mode = 2;
-                ticketDataGridView.Parent = tabPage5;
+                reportQueryInit();
             }
         }
 
         // Customer
-        private void customerQuery() {
+        private void customerQueryInit() {
+            lbCustomers.Parent = tabPage1;
+            tbQueryCustomer.Focus();
+            customerQueryRefresh();
+        }
+        private void customerQueryRefresh() {
             String q = this.tbQueryCustomer.Text;
-            this.customerBindingSource.Filter =
-                "CustomerCode LIKE '" + q + "%' OR CustomerName LIKE '%" + q + "%' OR Telephone LIKE '" + q + "%' OR IDCard LIKE '" + q + "%'";
+            if (q == null || q.Length == 0) {
+                this.customerBindingSource.Filter = "1 <> 1";
+            } else {
+                this.customerBindingSource.Filter =
+                    "CustomerCode LIKE '" + q + "%' OR CustomerName LIKE '%" + q + "%' OR Telephone LIKE '" + q + "%' OR IDCard LIKE '" + q + "%' OR Birthday LIKE '%" + q + "%'";
+            }
             this.customerBindingSource.Sort = "CustomerName";
+            if (customerDataGridView.Rows.Count > 0)
+                customerDataGridView.CurrentCell = customerDataGridView.Rows[0].Cells[0];
         }
 
         private void tbQueryCustomer_TextChanged(object sender, EventArgs e) {
-            customerQuery();
+            customerQueryRefresh();
         }
-
         private class ListItem {
             public String id;
             public String name;
@@ -235,25 +280,6 @@ namespace gxxf {
             ListItem newItem = new ListItem(cid, cname);
             lbCustomers.Items.Add(newItem);
         }
-        private void ticketDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
-            if (mode == 2)
-                return;
-
-            DataRowView drv = (DataRowView)ticketBindingSource.Current;
-            if (drv == null)
-                return;
-
-            int cid = Int32.Parse(DrGetStr(drv.Row, this.gxxfDataSet.Ticket.CustomerIdColumn));
-            DataRow r = gxxfDataSet.Customer.FindBycustomerid(cid);
-            if (r == null)
-                return;
-            String cname = DrGetStr(r, this.gxxfDataSet.Customer.CustomerNameColumn);
-            ListItem newItem = new ListItem(cid.ToString(), cname);
-            lbCustomers.Items.Add(newItem);
-        }
-
-
-
         private void lbCustomers_SelectedIndexChanged(object sender, EventArgs e) {
             ListItem li = (ListItem)lbCustomers.SelectedItem;
             if (li == null)
@@ -270,452 +296,162 @@ namespace gxxf {
 
 
 
-
-        private void customerBindingSource_CurrentChanged(object sender, EventArgs e) {
-            DataRowView drv = (DataRowView)customerBindingSource.Current;
-            DataRow dr = (drv == null) ? null : drv.Row;
-            tbCustomerCode.Text = DrGetStr(dr, this.gxxfDataSet.Customer.CustomerCodeColumn);
-            tbCustomerName.Text = DrGetStr(dr, this.gxxfDataSet.Customer.CustomerNameColumn);
-            tbIDCard.Text = DrGetStr(dr, this.gxxfDataSet.Customer.IDCardColumn);
-            cbSex.SelectedIndex = DrGetInt(dr, this.gxxfDataSet.Customer.SexColumn) - 1;
-            DrGetDate(dr, this.gxxfDataSet.Customer.BirthdayColumn, dtpBirthday, ckBirthday);
-            tbTelephone.Text = DrGetStr(dr, this.gxxfDataSet.Customer.TelephoneColumn);
-            tbAddress.Text = DrGetStr(dr, this.gxxfDataSet.Customer.addressgColumn);
-            tbCompanyName.Text = DrGetStr(dr, this.gxxfDataSet.Customer.CompanyNameColumn);
-            tbCompanyTelephone.Text = DrGetStr(dr, this.gxxfDataSet.Customer.CompanyTelephoneColumn);
-            tbCompanyAddress.Text = DrGetStr(dr, this.gxxfDataSet.Customer.CompanyAddressColumn);
-
-            if (mode == 0) {
-                if (drv == null) {
-                    this.ticketBindingSource.Filter = "1 <> 1";
-                } else {
-                    this.ticketBindingSource.Filter = "customerid = " + DrGetStr(dr, this.gxxfDataSet.Customer.customeridColumn);
-                    this.ticketBindingSource.Sort = "OrderDate DESC";
-                }
+        // Ticket Query
+        private void ticketQueryInit() {
+            ticketBindingSource_CurrentChanged(null, null);
+            SqlCommand cmd = new SqlCommand("SELECT DISTINCT CompanyName FROM Ticket ORDER BY CompanyName");
+            cmd.Connection = (SqlConnection)tableAdapterManager.Connection;
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataTable dtsrc = new DataTable();
+            adapter.Fill(dtsrc);
+            queryCompanyName.Items.Clear();
+            foreach (DataRow dr in dtsrc.Rows) {
+                Object o = dr["CompanyName"];
+                String cn = (o == null || (o is System.DBNull)) ? null : o.ToString();
+                if (cn != null && cn.Length > 0)
+                    queryCompanyName.Items.Add(dr["CompanyName"]);
             }
+            ticketQueryRefresh();
         }
+        private void ticketQueryRefresh() {
+            String d;
+            String filter = "";
 
-        private void ticketBindingSource_CurrentChanged(object sender, EventArgs e) {
-            DataRowView drv = (DataRowView)ticketBindingSource.Current;
-            DataRow dr = (drv == null) ? null : drv.Row;
-
-            tbTicketCode.Text = DrGetStr(dr, this.gxxfDataSet.Ticket.TicketCodeColumn);
-            DrGetDate(dr, gxxfDataSet.Ticket.OrderDateColumn, dtpOrderDate, ckOrderDate);
-            DrGetDate(dr, gxxfDataSet.Ticket.PlanDateColumn, dtpPlanDate, ckPlanDate);
-            DrGetDate(dr, gxxfDataSet.Ticket.CarryDateColumn, dtpCarryDate, ckCarryDate);
-            cbIfCarry.SelectedIndex = DrGetInt(dr, this.gxxfDataSet.Ticket.IfCarryColumn);
-            tbTotalPrice.Text = DrGetStr(dr, this.gxxfDataSet.Ticket.TotalPriceColumn);
-            tbEarnest.Text = DrGetStr(dr, this.gxxfDataSet.Ticket.EarnestColumn);
-            tbAccountReceived.Text = DrGetStr(dr, this.gxxfDataSet.Ticket.AccountReceivedColumn);
-            cbIfPayoff.SelectedIndex = DrGetInt(dr, this.gxxfDataSet.Ticket.IfPayoffColumn);
-            tbTicketCompanyName.Text = DrGetStr(dr, this.gxxfDataSet.Ticket.CompanyNameColumn);
-            tbTicketCompanyTelephone.Text = DrGetStr(dr, this.gxxfDataSet.Ticket.CompanyTelephoneColumn);
-            tbTicketCompanyAddress.Text = DrGetStr(dr, this.gxxfDataSet.Ticket.CompanyAddressColumn);
-            String remark = DrGetStr(dr, this.gxxfDataSet.Ticket.RemarkColumn);
-            if (remark == null || remark.Length == 0) {
-                btnRemark.Enabled = false;
-                tbRemark.Text = remark;
-                tbRemark.ReadOnly = false;
-                tbRemark.UseSystemPasswordChar = false;
-            } else {
-                btnRemark.Enabled = true;
-                tbRemark.ReadOnly = true;
-                tbRemark.UseSystemPasswordChar = true;
-                tbRemark.Text = remark;
-            }
-
-            if (drv == null) {
-                this.ticketJacketBindingSource.Filter = "1 <> 1";
-                this.ticketTrousersBindingSource.Filter = "1 <> 1";
-            } else {
-                String tid = DrGetStr(dr, this.gxxfDataSet.Ticket.TicketIdColumn);
-                this.ticketJacketBindingSource.Filter = "TicketId = " + tid;
-                this.ticketTrousersBindingSource.Filter = "TicketId = " + tid;
-            }
-
-            if (mode == 1 || mode == 2) {
-                if (drv == null) {
-                    this.customerBindingSource.Filter = "1 <> 1";
-                } else {
-                    this.customerBindingSource.Filter = "customerid = " + DrGetStr(dr, this.gxxfDataSet.Ticket.CustomerIdColumn);
-                }
-            }
-        }
-
-        private void btnRemark_Click(object sender, EventArgs e) {
-            Form prompt = new Form();
-            prompt.Width = 150;
-            prompt.Height = 90;
-            prompt.Text = "請輸入密碼";
-            TextBox textBox = new TextBox() { Left = 10, Top = 10, Width = 100, UseSystemPasswordChar = true };
-            Button confirmation = new Button() { Left = 10, Top = 30, Width = 40, Text = "Ok" };
-            confirmation.Click += (s, ee) => { prompt.Close(); };
-            prompt.Controls.Add(textBox);
-            prompt.Controls.Add(confirmation);
-            prompt.ShowDialog();
-
-            if (!textBox.Text.Equals(password)) {
-                MessageBox.Show("密碼錯誤");
-                return;
-            }
-
-            tbRemark.ReadOnly = false;
-            tbRemark.UseSystemPasswordChar = false;
-            btnRemark.Enabled = false;
-        }
-
-        private void ticketJacketBindingSource_CurrentChanged(object sender, EventArgs e) {
-            DataRowView drv = (DataRowView)ticketJacketBindingSource.Current;
-            DataRow dr = (drv == null) ? null : drv.Row;
-
-            cbIfWashing.SelectedIndex = DrGetInt(dr, this.gxxfDataSet.TicketJacket.IfWashingColumn);
-            tbJianKuan.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.JianKuanColumn);
-            cbJianKuanP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.JianKuanPColumn);
-            tbShangWei.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.ShangWeiColumn);
-            cbShangWeiP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.ShangWeiPColumn);
-            tbXiaWei.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.XiaWeiColumn);
-            cbXiaWeiP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.XiaWeiPColumn);
-            tbXiuChang.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.XiuChangColumn);
-            cbXiuChangP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.XiuChangPColumn);
-            tbXiuKou.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.XiuKouColumn);
-            cbXiuKouP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.XiuKouPColumn);
-            tbQianXiong.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.QianXiongColumn);
-            cbQianXiongP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.QianXiongPColumn);
-            tbHouBei.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.HouBeiColumn);
-            cbHouBeiP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.HouBeiPColumn);
-            tbShenChang.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.ShenChangColumn);
-            cbShenChangP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.ShenChangPColumn);
-            tbBeiChang.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.BeiChangColumn);
-            cbBeiChangP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.BeiChangPColumn);
-            tbBeiXin.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.BeiXinColumn);
-            cbBeiXinP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.BeiXinPColumn);
-            tbLingKou.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.LingKouColumn);
-            cbLingKouP.Text = DrGetStr(dr, this.gxxfDataSet.TicketJacket.LingKouPColumn);
-        }
-
-        private void ticketTrousersbindingSource_CurrentChanged(object sender, EventArgs e) {
-            DataRowView drv = (DataRowView)ticketTrousersBindingSource.Current;
-            DataRow dr = (drv == null) ? null : drv.Row;
-
-            cbKuIfWashing.SelectedIndex = DrGetInt(dr, this.gxxfDataSet.TicketTrousers.IfWashingColumn);
-            tbKuYao.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KuYaoColumn);
-            cbKuYaoP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KuYaoPColumn);
-            tbKuXiaWei.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.XiaWeiColumn);
-            cbKuXiaWeiP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.XiaWeiPColumn);
-            tbKuChang.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KuChangColumn);
-            cbKuChangP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KuChangPColumn);
-            tbZhongChang.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.ZhongChangColumn);
-            cbZhongChangP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.ZhongChangPColumn);
-            tbShangDang.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.ShangDangColumn);
-            cbShangDangP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.ShangDangPColumn);
-            tbKaiDang.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KaiDangColumn);
-            cbKaiDangP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KaiDangPColumn);
-            tbZhongDang.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.ZhongDangColumn);
-            cbZhongDangP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.ZhongDangPColumn);
-            tbKuKou.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KuKouColumn);
-            cbKuKouP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KuKouPColumn);
-            tbKouZi.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KouZiColumn);
-            cbKouZiP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.KouZiPColumn);
-            tbLaLian.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.LaLianColumn);
-            cbLaLianP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.LaLianPColumn);
-            tbYaoDai.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.YaoDaiColumn);
-            cbYaoDaiP.Text = DrGetStr(dr, this.gxxfDataSet.TicketTrousers.YaoDaiPColumn);
-        }
-
-        private void btnCustomerNew_Click(object sender, EventArgs e) {
-            String cid = null;
-            DataRow[] rows = gxxfDataSet.Customer.Select("CustomerName = '<新增顧客>'");
-            if (rows.Length > 0) {
-                cid = DrGetStr(rows[0], gxxfDataSet.Customer.customeridColumn);
-            } else {
-                DataRow dr = gxxfDataSet.Customer.AddCustomerRow("", "<新增顧客>", null, "1", null, null, null, null, null, null);
-                if (customerTableAdapter.Update(dr) > 0) {
-                    cid = DrGetStr(dr, gxxfDataSet.Customer.customeridColumn);
-                }
-                MessageBox.Show("新增成功");
-            }
-            if (cid != null) {
-                customerBindingSource.Filter = "customerid = '" + cid + "'";
-                return;
-            }
-        }
-        private void btnCustomerDelete_Click(object sender, EventArgs e) {
-            DataRowView drv = (DataRowView)customerBindingSource.Current;
-            if (drv == null) {
-                MessageBox.Show("無選定顧客，無法刪除");
-                return;
-            }
-
-            drv.Delete();
-            if (customerTableAdapter.Update(drv.Row) > 0) {
-                MessageBox.Show("刪除成功");
-            }
-        }
-        private void btnCustomerUpdate_Click(object sender, EventArgs e) {
-            bool needUpdate = false;
-            DataRowView drv = (DataRowView)customerBindingSource.Current;
-            if (drv == null) {
-                MessageBox.Show("無選定顧客，無法儲存");
-                return;
-            }
-            DataRow dr = drv.Row;
-            needUpdate = DrSet(dr, gxxfDataSet.Customer.CustomerCodeColumn, tbCustomerCode.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Customer.CustomerNameColumn, tbCustomerName.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Customer.IDCardColumn, tbIDCard.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Customer.SexColumn, cbSex.SelectedIndex + 1) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Customer.BirthdayColumn, dtpBirthday, ckBirthday) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Customer.TelephoneColumn, tbTelephone.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Customer.addressgColumn, tbAddress.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Customer.CompanyNameColumn, tbCompanyName.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Customer.CompanyTelephoneColumn, tbCompanyTelephone.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Customer.CompanyAddressColumn, tbCompanyAddress.Text) | needUpdate;
-            if (needUpdate)
-                this.customerTableAdapter.Update(this.gxxfDataSet.Customer);
-            MessageBox.Show("已儲存");
-        }
-
-        private void btnTicketNew_Click(object sender, EventArgs e) {
-            DataRowView drv = (DataRowView)customerBindingSource.Current;
-            if (drv == null) {
-                MessageBox.Show("無選定顧客，無法新增訂單");
-                return;
-            }
-            int cid = Int32.Parse(DrGetStr(drv.Row, gxxfDataSet.Customer.customeridColumn));
-            String tid = null;
-
-            DataRow[] rows = gxxfDataSet.Ticket.Select("TotalPrice = '<新增訂單>' AND CustomerId = '" + cid + "'");
-            if (rows.Length != 0) {
-                tid = DrGetStr(rows[0], this.gxxfDataSet.Ticket.TicketIdColumn);
-            } else {
-                DataRow dr = gxxfDataSet.Ticket.AddTicketRow("", cid, DateToStr(DateTime.Now), "", "", "<新增訂單>", "0", "0", "0", "0", null, 1, null, 1, null, null, null, null);
-                if (ticketTableAdapter.Update(dr) > 0) {
-                    tid = DrGetStr(dr, this.gxxfDataSet.Ticket.TicketIdColumn);
-
-                    dr = gxxfDataSet.TicketJacket.AddTicketJacketRow(Int32.Parse(tid), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-                    ticketJacketTableAdapter.Update(dr);
-                    dr = gxxfDataSet.TicketTrousers.AddTicketTrousersRow(Int32.Parse(tid), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-                    ticketTrousersTableAdapter.Update(dr);
-                }
-                MessageBox.Show("新增成功");
-            }
-            if (tid != null) {
-                if (mode == 0) {
-                    customerBindingSource.Filter = "customerid = '" + cid + "'";
-                }
-                ticketBindingSource.Filter = "TicketId = '" + tid + "'";
-                return;
-            }
-        }
-
-        private void btnTicketDelete_Click(object sender, EventArgs e) {
-            DataRowView drv = (DataRowView)ticketBindingSource.Current;
-            if (drv == null) {
-                MessageBox.Show("無選定訂單，無法刪除");
-                return;
-            }
-
-            String tid = DrGetStr(drv.Row, this.gxxfDataSet.Ticket.TicketIdColumn);
-            drv.Row.Delete();
-            if (ticketTableAdapter.Update(drv.Row) > 0) {
-                DataRow[] rows = gxxfDataSet.TicketJacket.Select("TicketId = '" + tid + "'");
-                foreach (DataRow r in rows) {
-                    r.Delete();
-                    ticketJacketTableAdapter.Update(r);
-                }
-
-                rows = gxxfDataSet.TicketTrousers.Select("TicketId = '" + tid + "'");
-                foreach (DataRow r in rows) {
-                    r.Delete();
-                    ticketTrousersTableAdapter.Update(r);
-                }
-
-                MessageBox.Show("刪除成功");
-            }
-        }
-
-        private void btnTicketUpdate_Click(object sender, EventArgs e) {
-            bool needUpdate = false;
-            DataRowView drv = (DataRowView)ticketBindingSource.Current;
-            if (drv == null) {
-                MessageBox.Show("無選定訂單，無法儲存");
-                return;
-            }
-            DataRow dr = drv.Row;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.TicketCodeColumn, tbTicketCode.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.OrderDateColumn, dtpOrderDate, ckOrderDate) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.PlanDateColumn, dtpPlanDate, ckPlanDate) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.CarryDateColumn, dtpCarryDate, ckCarryDate) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.IfCarryColumn, cbIfCarry.SelectedIndex) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.TotalPriceColumn, tbTotalPrice.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.EarnestColumn, tbEarnest.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.AccountReceivedColumn, tbAccountReceived.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.IfPayoffColumn, cbIfPayoff.SelectedIndex) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.CompanyNameColumn, tbTicketCompanyName.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.CompanyTelephoneColumn, tbTicketCompanyTelephone.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.CompanyAddressColumn, tbTicketCompanyAddress.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.RemarkColumn, tbRemark.Text) | needUpdate;
-            if (needUpdate)
-                this.ticketTableAdapter.Update(this.gxxfDataSet.Ticket);
-
-            needUpdate = false;
-            drv = (DataRowView)ticketJacketBindingSource.Current;
-            dr = (drv == null) ? null : drv.Row;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.JianKuanColumn, tbJianKuan.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.JianKuanPColumn, cbJianKuanP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.ShangWeiColumn, tbShangWei.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.ShangWeiPColumn, cbShangWeiP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiaWeiColumn, tbXiaWei.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiaWeiPColumn, cbXiaWeiP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiuChangColumn, tbXiuChang.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiuChangPColumn, cbXiuChangP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiuKouColumn, tbXiuKou.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiuKouPColumn, cbXiuKouP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.QianXiongColumn, tbQianXiong.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.QianXiongPColumn, cbQianXiongP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.HouBeiColumn, tbHouBei.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.HouBeiPColumn, cbHouBeiP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.ShenChangColumn, tbShenChang.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.ShenChangPColumn, cbShenChangP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.BeiChangColumn, tbBeiChang.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.BeiChangPColumn, cbBeiChangP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.BeiXinColumn, tbBeiXin.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.BeiXinPColumn, cbBeiXinP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.LingKouColumn, tbLingKou.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.LingKouPColumn, cbLingKouP.Text) | needUpdate;
-            if (needUpdate)
-                this.ticketJacketTableAdapter.Update(this.gxxfDataSet.TicketJacket);
-
-            needUpdate = false;
-            drv = (DataRowView)ticketTrousersBindingSource.Current;
-            dr = (drv == null) ? null : drv.Row;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuYaoColumn, tbKuYao.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuYaoPColumn, cbKuYaoP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.XiaWeiColumn, tbKuXiaWei.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.XiaWeiPColumn, cbKuXiaWeiP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuChangColumn, tbKuChang.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuChangPColumn, cbKuChangP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ZhongChangColumn, tbZhongChang.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ZhongChangPColumn, cbZhongChangP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ShangDangColumn, tbShangDang.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ShangDangPColumn, cbShangDangP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KaiDangColumn, tbKaiDang.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KaiDangPColumn, cbKaiDangP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ZhongDangColumn, tbZhongDang.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ZhongDangPColumn, cbZhongDangP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuKouColumn, tbKuKou.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuKouPColumn, cbKuKouP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KouZiColumn, tbKouZi.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KouZiPColumn, cbKouZiP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.LaLianColumn, tbLaLian.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.LaLianPColumn, cbLaLianP.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.YaoDaiColumn, tbYaoDai.Text) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.YaoDaiPColumn, cbYaoDaiP.Text) | needUpdate;
-            if (needUpdate)
-                this.ticketTrousersTableAdapter.Update(this.gxxfDataSet.TicketTrousers);
-            MessageBox.Show("已儲存");
-        }
-
-        private void ticketQuery() {
             if (!init)
                 return;
 
-            String filter = "";
-            if (ckQueryOrderDate.Checked) {
-                filter = "OrderDate >= '" + DateToStr(dtpQueryOrderDate1.Value) + "' AND OrderDate <= '" + DateToStr(dtpQueryOrderDate2.Value) + "'";
-            }
-            if (ckQueryPlanDate.Checked) {
+            d = queryCompanyName.Text;
+            if (d != null && d.Length > 0) {
                 if (filter.Length > 0)
                     filter += " AND ";
-                filter += "PlanDate >= '" + DateToStr(dtpQueryPlanDate1.Value) + "' AND PlanDate <= '" + DateToStr(dtpQueryPlanDate2.Value) + "'";
+                filter += "CompanyName = '" + d + "'";
             }
-            if (ckQueryIfCarry.Checked) {
+            d = ValidateDate(queryOrderDate1.Text);
+            if (d != null && d.Length > 0) {
                 if (filter.Length > 0)
                     filter += " AND ";
-                filter += "IfCarry = " + cbQueryIfCarry.SelectedIndex;
+                filter += "OrderDate >= '" + d + "'";
             }
-            if (ckQueryIfPayoff.Checked) {
+            d = ValidateDate(queryOrderDate2.Text);
+            if (d != null && d.Length > 0) {
                 if (filter.Length > 0)
                     filter += " AND ";
-                filter += "IfPayoff = " + cbQueryIfPayoff.SelectedIndex;
+                filter += "OrderDate <= '" + d + "'";
+            }
+            d = ValidateDate(queryPlanDate1.Text);
+            if (d != null && d.Length > 0) {
+                if (filter.Length > 0)
+                    filter += " AND ";
+                filter += "PlanDate >= '" + d + "'";
+            }
+            d = ValidateDate(queryPlanDate2.Text);
+            if (d != null && d.Length > 0) {
+                if (filter.Length > 0)
+                    filter += " AND ";
+                filter += "PlanDate <= '" + d + "'";
+            }
+            d = ValidateDate(queryCarryDate1.Text);
+            if (d != null && d.Length > 0) {
+                if (filter.Length > 0)
+                    filter += " AND ";
+                filter += "CarryDate >= '" + d + "'";
+            }
+            d = ValidateDate(queryCarryDate2.Text);
+            if (d != null && d.Length > 0) {
+                if (filter.Length > 0)
+                    filter += " AND ";
+                filter += "CarryDate <= '" + d + "'";
+            }
+
+            if (queryIfCarry1.Checked) {
+                if (filter.Length > 0)
+                    filter += " AND ";
+                filter += "IfCarry = 0";
+            }
+            if (queryIfCarry2.Checked) {
+                if (filter.Length > 0)
+                    filter += " AND ";
+                filter += "IfCarry = 1";
+            }
+            if (queryIfPayoff1.Checked) {
+                if (filter.Length > 0)
+                    filter += " AND ";
+                filter += "IfPayoff = 0";
+            }
+            if (queryIfPayoff2.Checked) {
+                if (filter.Length > 0)
+                    filter += " AND ";
+                filter += "IfPayoff = 1";
             }
 
             if (filter.Length == 0)
                 filter = "1 <> 1";
-            ticketBindingSource.Filter = filter;
-            ticketBindingSource.Sort = "OrderDate DESC";
+
+            changeTicketFilter(filter, "OrderDate DESC");
+            if (dgvQueryTicket.Rows.Count > 0)
+                dgvQueryTicket.CurrentCell = dgvQueryTicket.Rows[0].Cells[0];
         }
 
-        private void dtpQueryOrderDate1_ValueChanged(object sender, EventArgs e) {
-            if (dtpQueryOrderDate1.Value > dtpQueryOrderDate2.Value) {
-                dtpQueryOrderDate2.Value = dtpQueryOrderDate1.Value;
+        private void queryCompanyName_SelectedIndexChanged(object sender, EventArgs e) {
+            ticketQueryRefresh();
+        }
+        private void dgvCustomerTicket_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
+            if (mode == 2)
+                return;
+
+            btnEdit_Click(sender, null);
+        }
+
+
+        private void query_CheckedChanged(object sender, EventArgs e) {
+            if (sender == queryIfCarry1) {
+                if (queryIfCarry1.Checked)
+                    queryIfCarry2.Checked = false;
+            } else if (sender == queryIfCarry2) {
+                if (queryIfCarry2.Checked)
+                    queryIfCarry1.Checked = false;
+            } else if (sender == queryIfPayoff1) {
+                if (queryIfPayoff1.Checked)
+                    queryIfPayoff2.Checked = false;
+            } else if (sender == queryIfPayoff2) {
+                if (queryIfPayoff2.Checked)
+                    queryIfPayoff1.Checked = false;
             }
-            ckQueryOrderDate.Checked = true;
-            ticketQuery();
+            ticketQueryRefresh();
         }
-
-        private void dtpQueryOrderDate2_ValueChanged(object sender, EventArgs e) {
-            if (dtpQueryOrderDate1.Value > dtpQueryOrderDate2.Value) {
-                dtpQueryOrderDate1.Value = dtpQueryOrderDate2.Value;
+        private void queryDate_Validated(object sender, EventArgs e) {
+            mtbDate_Validated(sender, e);
+            ticketQueryRefresh();
+        }
+        private void queryDate_TextChanged(object sender, EventArgs e) {
+            MaskedTextBox mtb = (MaskedTextBox)sender;
+            if (ValidateDate(mtb.Text) != null) {
+                ticketQueryRefresh();
             }
-            ckQueryOrderDate.Checked = true;
-            ticketQuery();
-        }
-
-        private void dtpQueryPlanDate1_ValueChanged(object sender, EventArgs e) {
-            if (dtpQueryPlanDate1.Value > dtpQueryPlanDate2.Value) {
-                dtpQueryPlanDate2.Value = dtpQueryPlanDate1.Value;
-            }
-            ckQueryPlanDate.Checked = true;
-            ticketQuery();
-        }
-
-        private void dtpQueryPlanDate2_ValueChanged(object sender, EventArgs e) {
-            if (dtpQueryPlanDate1.Value > dtpQueryPlanDate2.Value) {
-                dtpQueryPlanDate1.Value = dtpQueryPlanDate2.Value;
-            }
-            ckQueryPlanDate.Checked = true;
-            ticketQuery();
-        }
-
-        private void cbQueryIfCarry_SelectedIndexChanged(object sender, EventArgs e) {
-            ckQueryIfCarry.Checked = true;
-            ticketQuery();
-        }
-
-        private void cbQueryIfPayoff_SelectedIndexChanged(object sender, EventArgs e) {
-            ckQueryIfPayoff.Checked = true;
-            ticketQuery();
-        }
-
-        private void ckQueryOrderDate_CheckedChanged(object sender, EventArgs e) {
-            ticketQuery();
-        }
-        private void ckQueryPlanDate_CheckedChanged(object sender, EventArgs e) {
-            ticketQuery();
-        }
-        private void ckQueryIfCarry_CheckedChanged(object sender, EventArgs e) {
-            ticketQuery();
-        }
-
-        private void ckQueryIfPayoff_CheckedChanged(object sender, EventArgs e) {
-            ticketQuery();
-        }
-
-        private void ckBirthday_CheckedChanged(object sender, EventArgs e) {
-            dtpBirthday.Enabled = ckBirthday.Checked;
-        }
-        private void ckOrderDate_CheckedChanged(object sender, EventArgs e) {
-            dtpOrderDate.Enabled = ckOrderDate.Checked;
-        }
-        private void ckPlanDate_CheckedChanged(object sender, EventArgs e) {
-            dtpPlanDate.Enabled = ckPlanDate.Checked;
-        }
-        private void ckCarryDate_CheckedChanged(object sender, EventArgs e) {
-            dtpCarryDate.Enabled = ckCarryDate.Checked;
         }
 
 
         // Report
+        private void reportQueryInit() {
+            reportQueryRefresh();
+        }
+        private void reportQueryRefresh() {
+            String filter = null;
+            Report r = (Report)reportBindingSource.Current;
+            if (r != null)
+                filter = "OrderDate LIKE '" + r.OrderDate + "%'";
+
+            try {
+                changeTicketFilter(filter, "OrderDate");
+                if (dgvQueryReport.Rows.Count > 0)
+                    dgvQueryReport.CurrentCell = dgvQueryReport.Rows[0].Cells[0];
+            } catch (Exception ex) {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void reportBindingSource_CurrentChanged(object sender, EventArgs e) {
+            reportQueryRefresh();
+        }
         private void btnUpdateReport_Click(object sender, EventArgs e) {
             Report r = null;
             String lastod = null;
@@ -773,18 +509,665 @@ namespace gxxf {
             Cursor.Current = Cursors.Default;
         }
 
-        private void reportBindingSource_CurrentChanged(object sender, EventArgs e) {
-            Report r = (Report)reportBindingSource.Current;
-            if (r == null)
-                return;
 
-            try {
-                ticketBindingSource.Filter = "OrderDate LIKE '" + r.OrderDate + "%'";
-                ticketBindingSource.Sort = "OrderDate";
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message);
+
+        // Right side panel
+        private void changeTicketFilter(String filter, String sort) {
+            if (filter == null) {
+                ticketBindingSource.Filter = "1 <> 1";
+                return;
+            }
+            ticketBindingSource.Filter = filter;
+            if (sort != null) {
+                ticketBindingSource.Sort = sort;
             }
         }
+
+        private String showCurrentCustomer() {
+            DataRowView drv = (DataRowView)customerBindingSource.Current;
+            DataRow dr = (drv == null) ? null : drv.Row;
+            DrGet(dr, this.gxxfDataSet.Customer.CustomerCodeColumn, showCustomerCode);
+            DrGet(dr, this.gxxfDataSet.Customer.CustomerNameColumn, showCustomerName);
+            DrGet(dr, this.gxxfDataSet.Customer.IDCardColumn, showIDCard);
+            if (dr == null) {
+                showSex.Enabled = false;
+                showSex.Text = "";
+            } else {
+                showSex.Enabled = true;
+                showSex.Text = DrGetInt(dr, this.gxxfDataSet.Customer.SexColumn) == 1 ? "男" : "女";
+            }
+            DrGet(dr, this.gxxfDataSet.Customer.BirthdayColumn, showBirthday);
+            DrGet(dr, this.gxxfDataSet.Customer.TelephoneColumn, showTelephone);
+            DrGet(dr, this.gxxfDataSet.Customer.addressgColumn, showAddress);
+            DrGet(dr, this.gxxfDataSet.Customer.CompanyNameColumn, showCompanyName);
+            DrGet(dr, this.gxxfDataSet.Customer.CompanyTelephoneColumn, showCompanyTelephone);
+            DrGet(dr, this.gxxfDataSet.Customer.CompanyAddressColumn, showCompanyAddress);
+
+            btnEdit.Enabled = (dr != null);
+            btnTicketNew.Enabled = (dr != null);
+
+            if (dr == null)
+                return null;
+            return DrGetStr(dr, this.gxxfDataSet.Customer.customeridColumn);
+        }
+        private DataRow showCurrentTicket() {
+            DataRowView drv = (DataRowView)ticketBindingSource.Current;
+            DataRow dr = (drv == null) ? null : drv.Row;
+            DrGet(dr, this.gxxfDataSet.Ticket.TicketCodeColumn, showTicketCode);
+            DrGet(dr, this.gxxfDataSet.Ticket.OrderDateColumn, showOrderDate);
+            DrGet(dr, this.gxxfDataSet.Ticket.PlanDateColumn, showPlanDate);
+            DrGet(dr, this.gxxfDataSet.Ticket.CarryDateColumn, showCarryDate);
+            DrGet(dr, this.gxxfDataSet.Ticket.TotalPriceColumn, showTotalPrice);
+            DrGet(dr, this.gxxfDataSet.Ticket.EarnestColumn, showEarnest);
+            DrGet(dr, this.gxxfDataSet.Ticket.AccountReceivedColumn, showAccountReceived);
+            DrGet(dr, this.gxxfDataSet.Ticket.CompanyNameColumn, showTicketCompanyName);
+            DrGet(dr, this.gxxfDataSet.Ticket.CompanyTelephoneColumn, showTicketCompanyTelephone);
+            DrGet(dr, this.gxxfDataSet.Ticket.CompanyAddressColumn, showTicketCompanyAddress);
+            showRemark.UseSystemPasswordChar = true;
+            DrGet(dr, this.gxxfDataSet.Ticket.RemarkColumn, showRemark);
+            showIfCarry.Enabled = (dr != null);
+            showIfPayoff.Enabled = (dr != null);
+            if (dr == null) {
+                showIfCarry.Text = "";
+                showIfPayoff.Text = "";
+            } else {
+                showIfCarry.Text = DrGetInt(dr, this.gxxfDataSet.Ticket.IfCarryColumn) == 0 ? "未取件" : "已取件";
+                showIfPayoff.Text = DrGetInt(dr, this.gxxfDataSet.Ticket.IfPayoffColumn) == 0 ? "未付清" : "已付清";
+            }
+
+            return dr;
+        }
+        private void showCurrentTicketJacket() {
+            DataRowView drv = (DataRowView)ticketJacketBindingSource.Current;
+            DataRow dr = (drv == null) ? null : drv.Row;
+            DrGet(dr, this.gxxfDataSet.TicketJacket.JianKuanColumn, showJianKuan);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.JianKuanPColumn, showJianKuanP);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.ShangWeiColumn, showShangWei);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.ShangWeiPColumn, showShangWeiP);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiaWeiColumn, showXiaWei);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiaWeiPColumn, showXiaWeiP);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiuChangColumn, showXiuChang);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiuChangPColumn, showXiuChangP);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiuKouColumn, showXiuKou);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiuKouPColumn, showXiuKouP);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.QianXiongColumn, showQianXiong);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.QianXiongPColumn, showQianXiongP);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.HouBeiColumn, showHouBei);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.HouBeiPColumn, showHouBeiP);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.ShenChangColumn, showShenChang);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.ShenChangPColumn, showShenChangP);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.BeiChangColumn, showBeiChang);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.BeiChangPColumn, showBeiChangP);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.BeiXinColumn, showBeiXin);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.BeiXinPColumn, showBeiXinP);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.LingKouColumn, showLingKou);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.LingKouPColumn, showLingKouP);
+        }
+        private void showCurrentTicketTrousers() {
+            DataRowView drv = (DataRowView)ticketTrousersBindingSource.Current;
+            DataRow dr = (drv == null) ? null : drv.Row;
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuYaoColumn, showKuYao);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuYaoPColumn, showKuYaoP);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.XiaWeiColumn, showKuXiaWei);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.XiaWeiPColumn, showKuXiaWeiP);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuChangColumn, showKuChang);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuChangPColumn, showKuChangP);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ZhongChangColumn, showZhongChang);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ZhongChangPColumn, showZhongChangP);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ShangDangColumn, showShangDang);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ShangDangPColumn, showShangDangP);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KaiDangColumn, showKaiDang);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KaiDangPColumn, showKaiDangP);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ZhongDangColumn, showZhongDang);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ZhongDangPColumn, showZhongDangP);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuKouColumn, showKuKou);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuKouPColumn, showKuKouP);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KouZiColumn, showKouZi);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KouZiPColumn, showKouZiP);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.LaLianColumn, showLaLian);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.LaLianPColumn, showLaLianP);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.YaoDaiColumn, showYaoDai);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.YaoDaiPColumn, showYaoDaiP);
+        }
+        private void customerBindingSource_CurrentChanged(object sender, EventArgs e) {
+            String cid = showCurrentCustomer();
+            if (mode == 0) {
+                if (cid == null) {
+                    changeTicketFilter(null, null);
+                } else {
+                    changeTicketFilter("customerid = " + cid, "OrderDate DESC");
+                    if (dgvCustomerTicket.Rows.Count > 0)
+                        dgvCustomerTicket.CurrentCell = dgvCustomerTicket.Rows[0].Cells[0];
+                }
+            }
+        }
+        private void ticketBindingSource_CurrentChanged(object sender, EventArgs e) {
+            DataRow dr = showCurrentTicket();
+            if (dr == null) {
+                this.ticketJacketBindingSource.Filter = "1 <> 1";
+                this.ticketTrousersBindingSource.Filter = "1 <> 1";
+            } else {
+                String tid = DrGetStr(dr, this.gxxfDataSet.Ticket.TicketIdColumn);
+                this.ticketJacketBindingSource.Filter = "TicketId = " + tid;
+                this.ticketTrousersBindingSource.Filter = "TicketId = " + tid;
+            }
+
+            if (mode == 1 || mode == 2) {
+                if (dr == null) {
+                    this.customerBindingSource.Filter = "1 <> 1";
+                } else {
+                    this.customerBindingSource.Filter = "customerid = " + DrGetStr(dr, this.gxxfDataSet.Ticket.CustomerIdColumn);
+                }
+            }
+        }
+
+        private void ticketJacketBindingSource_CurrentChanged(object sender, EventArgs e) {
+            showCurrentTicketJacket();
+        }
+        private void ticketTrousersbindingSource_CurrentChanged(object sender, EventArgs e) {
+            showCurrentTicketTrousers();
+        }
+
+        // Edit Operation
+        private int EditMode = 0;
+        private void loadCustomer() {
+            DataRowView drv1 = (DataRowView)customerBindingSource.Current;
+            DataRow dr1 = (drv1 == null) ? null : drv1.Row;
+            DrGet(dr1, this.gxxfDataSet.Customer.CustomerCodeColumn, tbCustomerCode);
+            DrGet(dr1, this.gxxfDataSet.Customer.CustomerNameColumn, tbCustomerName);
+            DrGet(dr1, this.gxxfDataSet.Customer.IDCardColumn, tbIDCard);
+            if (DrGetInt(dr1, this.gxxfDataSet.Customer.SexColumn) == 1) {
+                rbSex1.Checked = true;
+            } else {
+                rbSex2.Checked = true;
+            }
+            DrGet(dr1, this.gxxfDataSet.Customer.BirthdayColumn, mtbBirthday);
+            DrGet(dr1, this.gxxfDataSet.Customer.TelephoneColumn, tbTelephone);
+            DrGet(dr1, this.gxxfDataSet.Customer.addressgColumn, tbAddress);
+            DrGet(dr1, this.gxxfDataSet.Customer.CompanyNameColumn, tbCompanyName);
+            DrGet(dr1, this.gxxfDataSet.Customer.CompanyTelephoneColumn, tbCompanyTelephone);
+            DrGet(dr1, this.gxxfDataSet.Customer.CompanyAddressColumn, tbCompanyAddress);
+        }
+        private void clearCustomer() {
+            tbCustomerCode.Text = "";
+            tbCustomerName.Text = "";
+            tbIDCard.Text = "";
+            tbTelephone.Text = "";
+            mtbBirthday.Text = "";
+            rbSex1.Checked = true;
+            tbAddress.Text = "";
+            tbCompanyName.Text = "";
+            tbCompanyTelephone.Text = "";
+            tbCompanyAddress.Text = "";
+        }
+        private void enableCustomer(bool enable) {
+            tbCustomerCode.Enabled = enable;
+            tbCustomerName.Enabled = enable;
+            tbIDCard.Enabled = enable;
+            tbTelephone.Enabled = enable;
+            mtbBirthday.Enabled = enable;
+            rbSex1.Enabled = enable;
+            rbSex2.Enabled = enable;
+            tbAddress.Enabled = enable;
+            tbCompanyName.Enabled = enable;
+            tbCompanyTelephone.Enabled = enable;
+            tbCompanyAddress.Enabled = enable;
+        }
+        private void loadTicket(bool clear, bool clearMore) {
+            DataRowView drv = (DataRowView)ticketBindingSource.Current;
+            DataRow dr = (drv == null) ? null : drv.Row;
+
+            DrGet(dr, this.gxxfDataSet.Ticket.TicketCodeColumn, tbTicketCode, clear);
+            DrGet(dr, this.gxxfDataSet.Ticket.TotalPriceColumn, tbTotalPrice, clear);
+            DrGet(dr, this.gxxfDataSet.Ticket.EarnestColumn, tbEarnest, clear);
+            DrGet(dr, this.gxxfDataSet.Ticket.AccountReceivedColumn, tbAccountReceived, clear);
+            if (clear) {
+                mtbOrderDate.Text = DateToStr(DateTime.Now);
+                mtbPlanDate.Text = DateToStr(DateTime.Now);
+                mtbCarryDate.Text = "";
+                rbIfCarry1.Checked = true;
+                rbIfPayoff1.Checked = true;
+            } else {
+                DrGet(dr, this.gxxfDataSet.Ticket.OrderDateColumn, mtbOrderDate);
+                DrGet(dr, this.gxxfDataSet.Ticket.PlanDateColumn, mtbPlanDate);
+                DrGet(dr, this.gxxfDataSet.Ticket.CarryDateColumn, mtbCarryDate);
+                if (DrGetInt(dr, this.gxxfDataSet.Ticket.IfCarryColumn) == 0) {
+                    rbIfCarry1.Checked = true;
+                } else {
+                    rbIfCarry2.Checked = true;
+                }
+                if (DrGetInt(dr, this.gxxfDataSet.Ticket.IfPayoffColumn) == 0) {
+                    rbIfPayoff1.Checked = true;
+                } else {
+                    rbIfPayoff2.Checked = true;
+                }
+            }
+
+            DrGet(dr, this.gxxfDataSet.Ticket.CompanyNameColumn, tbTicketCompanyName, clearMore);
+            DrGet(dr, this.gxxfDataSet.Ticket.CompanyTelephoneColumn, tbTicketCompanyTelephone, clearMore);
+            DrGet(dr, this.gxxfDataSet.Ticket.CompanyAddressColumn, tbTicketCompanyAddress, clearMore);
+            DrGet(dr, this.gxxfDataSet.Ticket.RemarkColumn, tbRemark, clearMore);
+
+            drv = (DataRowView)ticketJacketBindingSource.Current;
+            dr = (drv == null) ? null : drv.Row;
+            DrGet(dr, this.gxxfDataSet.TicketJacket.JianKuanColumn, tbJianKuan, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.JianKuanPColumn, cbJianKuanP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.ShangWeiColumn, tbShangWei, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.ShangWeiPColumn, cbShangWeiP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiaWeiColumn, tbXiaWei, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiaWeiPColumn, cbXiaWeiP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiuChangColumn, tbXiuChang, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiuChangPColumn, cbXiuChangP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiuKouColumn, tbXiuKou, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.XiuKouPColumn, cbXiuKouP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.QianXiongColumn, tbQianXiong, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.QianXiongPColumn, cbQianXiongP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.HouBeiColumn, tbHouBei, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.HouBeiPColumn, cbHouBeiP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.ShenChangColumn, tbShenChang, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.ShenChangPColumn, cbShenChangP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.BeiChangColumn, tbBeiChang, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.BeiChangPColumn, cbBeiChangP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.BeiXinColumn, tbBeiXin, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.BeiXinPColumn, cbBeiXinP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.LingKouColumn, tbLingKou, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketJacket.LingKouPColumn, cbLingKouP, clearMore);
+
+            drv = (DataRowView)ticketTrousersBindingSource.Current;
+            dr = (drv == null) ? null : drv.Row;
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuYaoColumn, tbKuYao, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuYaoPColumn, cbKuYaoP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.XiaWeiColumn, tbKuXiaWei, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.XiaWeiPColumn, cbKuXiaWeiP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuChangColumn, tbKuChang, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuChangPColumn, cbKuChangP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ZhongChangColumn, tbZhongChang, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ZhongChangPColumn, cbZhongChangP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ShangDangColumn, tbShangDang, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ShangDangPColumn, cbShangDangP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KaiDangColumn, tbKaiDang, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KaiDangPColumn, cbKaiDangP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ZhongDangColumn, tbZhongDang, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.ZhongDangPColumn, cbZhongDangP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuKouColumn, tbKuKou, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KuKouPColumn, cbKuKouP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KouZiColumn, tbKouZi, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.KouZiPColumn, cbKouZiP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.LaLianColumn, tbLaLian, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.LaLianPColumn, cbLaLianP, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.YaoDaiColumn, tbYaoDai, clearMore);
+            DrGet(dr, this.gxxfDataSet.TicketTrousers.YaoDaiPColumn, cbYaoDaiP, clearMore);
+
+            tbRemark.UseSystemPasswordChar = true;
+
+            tbCustomerCode.Focus();
+        }
+        private void btnCustomerNew_Click(object sender, EventArgs e) {
+            EditMode = 0;
+            clearCustomer();
+            enableCustomer(true);
+            loadTicket(true, true);
+            panelMain.Visible = false;
+            panelEdit.Visible = true;
+        }
+        private void btnTicketNew_Click(object sender, EventArgs e) {
+            EditMode = 1;
+            loadCustomer();
+            enableCustomer(false);
+            loadTicket(true, false);
+            panelMain.Visible = false;
+            panelEdit.Visible = true;
+        }
+        private void btnEdit_Click(object sender, EventArgs e) {
+            DataRowView drv = (DataRowView)customerBindingSource.Current;
+            if (drv == null)
+                return;
+
+            EditMode = 2;
+            loadCustomer();
+            enableCustomer(true);
+            loadTicket(false, false);
+            panelMain.Visible = false;
+            panelEdit.Visible = true;
+        }
+
+        // Save Operation
+        private bool checkCustomer() {
+            if (tbCustomerCode.Text.Trim().Length == 0) { MessageBox.Show("編號不可空白"); return false; }
+            if (tbCustomerName.Text.Trim().Length == 0) { MessageBox.Show("姓名不可空白"); return false; }
+            if (ValidateDate(mtbBirthday.Text) == null) { MessageBox.Show("生日錯誤"); return false; }
+            return true;
+        }
+        private bool checkTicket() {
+            if (tbTicketCode.Text.Trim().Length == 0) { MessageBox.Show("訂單編號不可空白"); return false; }
+            String bs = ValidateDate(mtbOrderDate.Text);
+            if (bs == null || bs.Length == 0) { MessageBox.Show("訂購日期錯誤"); return false; }
+            bs = ValidateDate(mtbPlanDate.Text);
+            if (bs == null || bs.Length == 0) { MessageBox.Show("預交日期錯誤"); return false; }
+            bs = ValidateDate(mtbCarryDate.Text);
+            if (bs == null) { MessageBox.Show("取件日期錯誤"); return false; }
+            try {
+                ValidateMoney(tbTotalPrice.Text);
+                ValidateMoney(tbEarnest.Text);
+                ValidateMoney(tbAccountReceived.Text);
+            } catch (Exception) {
+                MessageBox.Show("金額錯誤"); return false;
+            }
+            return true;
+        }
+        private bool checkDupTicketCode() {
+            String ticketCode = tbTicketCode.Text.Trim();
+
+            DataRow[] drs = gxxfDataSet.Ticket.Select("TicketCode = '" + ticketCode + "'");
+            if (drs.Length > 0) {
+                return true;
+            }
+            return false;
+        }
+        private bool storeCustomer(DataRow dr) {
+            bool needUpdate = false;
+            needUpdate = DrSet(dr, gxxfDataSet.Customer.CustomerCodeColumn, tbCustomerCode.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Customer.CustomerNameColumn, tbCustomerName.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Customer.IDCardColumn, tbIDCard.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Customer.TelephoneColumn, tbTelephone.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Customer.BirthdayColumn, ValidateDate(mtbBirthday.Text)) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Customer.SexColumn, rbSex1.Checked ? 1 : 2) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Customer.addressgColumn, tbAddress.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Customer.CompanyNameColumn, tbCompanyName.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Customer.CompanyTelephoneColumn, tbCompanyTelephone.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Customer.CompanyAddressColumn, tbCompanyAddress.Text) | needUpdate;
+            return needUpdate;
+        }
+        private bool storeTicket(DataRow dr) {
+            bool needUpdate = false;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.TicketCodeColumn, tbTicketCode.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.OrderDateColumn, ValidateDate(mtbOrderDate.Text)) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.PlanDateColumn, ValidateDate(mtbPlanDate.Text)) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.CarryDateColumn, ValidateDate(mtbCarryDate.Text)) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.IfCarryColumn, rbIfCarry1.Checked ? 0 : 1) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.TotalPriceColumn, ValidateMoney(tbTotalPrice.Text)) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.EarnestColumn, ValidateMoney(tbEarnest.Text)) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.AccountReceivedColumn, ValidateMoney(tbAccountReceived.Text)) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.IfPayoffColumn, rbIfPayoff1.Checked ? 0 : 1) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.CompanyNameColumn, tbTicketCompanyName.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.CompanyTelephoneColumn, tbTicketCompanyTelephone.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.CompanyAddressColumn, tbTicketCompanyAddress.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.RemarkColumn, tbRemark.Text) | needUpdate;
+            return needUpdate;
+        }
+        private bool storeTicketJacket(DataRow dr) {
+            bool needUpdate = false;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.JianKuanColumn, tbJianKuan.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.JianKuanPColumn, cbJianKuanP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.ShangWeiColumn, tbShangWei.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.ShangWeiPColumn, cbShangWeiP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiaWeiColumn, tbXiaWei.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiaWeiPColumn, cbXiaWeiP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiuChangColumn, tbXiuChang.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiuChangPColumn, cbXiuChangP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiuKouColumn, tbXiuKou.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.XiuKouPColumn, cbXiuKouP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.QianXiongColumn, tbQianXiong.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.QianXiongPColumn, cbQianXiongP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.HouBeiColumn, tbHouBei.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.HouBeiPColumn, cbHouBeiP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.ShenChangColumn, tbShenChang.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.ShenChangPColumn, cbShenChangP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.BeiChangColumn, tbBeiChang.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.BeiChangPColumn, cbBeiChangP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.BeiXinColumn, tbBeiXin.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.BeiXinPColumn, cbBeiXinP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.LingKouColumn, tbLingKou.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketJacket.LingKouPColumn, cbLingKouP.Text) | needUpdate;
+            return needUpdate;
+        }
+        private bool storeTicketTrousers(DataRow dr) {
+            bool needUpdate = false;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuYaoColumn, tbKuYao.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuYaoPColumn, cbKuYaoP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.XiaWeiColumn, tbKuXiaWei.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.XiaWeiPColumn, cbKuXiaWeiP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuChangColumn, tbKuChang.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuChangPColumn, cbKuChangP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ZhongChangColumn, tbZhongChang.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ZhongChangPColumn, cbZhongChangP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ShangDangColumn, tbShangDang.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ShangDangPColumn, cbShangDangP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KaiDangColumn, tbKaiDang.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KaiDangPColumn, cbKaiDangP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ZhongDangColumn, tbZhongDang.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.ZhongDangPColumn, cbZhongDangP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuKouColumn, tbKuKou.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KuKouPColumn, cbKuKouP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KouZiColumn, tbKouZi.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.KouZiPColumn, cbKouZiP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.LaLianColumn, tbLaLian.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.LaLianPColumn, cbLaLianP.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.YaoDaiColumn, tbYaoDai.Text) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.TicketTrousers.YaoDaiPColumn, cbYaoDaiP.Text) | needUpdate;
+            return needUpdate;
+        }
+        private bool saveNewCustomer() {
+            if (!checkCustomer())
+                return false;
+            if (!checkTicket())
+                return false;
+
+            if (checkDupTicketCode()) {
+                MessageBox.Show("訂單編號已存在");
+                return false;
+            }
+
+            int cid = -1;
+            int tid = -1;
+            using (System.Transactions.TransactionScope updateTransaction = new System.Transactions.TransactionScope()) {
+                DataRow dr = gxxfDataSet.Customer.AddCustomerRow("", "", null, "1", null, null, null, null, null, null);
+                storeCustomer(dr);
+                if (customerTableAdapter.Update(dr) != 1) {
+                    // TODO
+                }
+
+                cid = Int32.Parse(DrGetStr(dr, gxxfDataSet.Customer.customeridColumn));
+
+                dr = gxxfDataSet.Ticket.AddTicketRow("", cid, "", "", "", "0", "0", "0", "0", "0", null, null, null, null, null);
+                storeTicket(dr);
+                if (this.ticketTableAdapter.Update(dr) != 1) {
+                    // TODO
+                }
+
+                tid = Int32.Parse(DrGetStr(dr, this.gxxfDataSet.Ticket.TicketIdColumn));
+
+                dr = gxxfDataSet.TicketJacket.AddTicketJacketRow(tid, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                storeTicketJacket(dr);
+                this.ticketJacketTableAdapter.Update(dr);
+                dr = gxxfDataSet.TicketTrousers.AddTicketTrousersRow(tid, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                storeTicketTrousers(dr);
+                this.ticketTrousersTableAdapter.Update(dr);
+
+                updateTransaction.Complete();
+            }
+            if (cid > 0)
+                customerBindingSource.Filter = "customerid = '" + cid + "'";
+            if (tid > 0)
+                ticketBindingSource.Filter = "TicketId = '" + tid + "'";
+            return true;
+        }
+        private bool saveNewTicket() {
+            DataRowView drvCustomer = (DataRowView)customerBindingSource.Current;
+            if (drvCustomer == null)
+                return false;
+
+            if (!checkTicket())
+                return false;
+
+            if (checkDupTicketCode()) {
+                MessageBox.Show("訂單編號已存在");
+                return false;
+            }
+
+            int cid = Int32.Parse(DrGetStr(drvCustomer.Row, gxxfDataSet.Customer.customeridColumn));
+            int tid = -1;
+            using (System.Transactions.TransactionScope updateTransaction = new System.Transactions.TransactionScope()) {
+                DataRow dr = gxxfDataSet.Ticket.AddTicketRow("", cid, "", "", "", "0", "0", "0", "0", "0", null, null, null, null, null);
+                storeTicket(dr);
+                if (this.ticketTableAdapter.Update(dr) != 1) {
+                    // TODO
+                }
+
+                tid = Int32.Parse(DrGetStr(dr, this.gxxfDataSet.Ticket.TicketIdColumn));
+
+                dr = gxxfDataSet.TicketJacket.AddTicketJacketRow(tid, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                storeTicketJacket(dr);
+                this.ticketJacketTableAdapter.Update(dr);
+                dr = gxxfDataSet.TicketTrousers.AddTicketTrousersRow(tid, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                storeTicketTrousers(dr);
+                this.ticketTrousersTableAdapter.Update(dr);
+
+                updateTransaction.Complete();
+            }
+            if (tid > 0)
+                ticketBindingSource.Filter = "TicketId = '" + tid + "'";
+            return true;
+        }
+        private bool saveEditTicket() {
+            DataRowView drvCustomer = (DataRowView)customerBindingSource.Current;
+            if (drvCustomer == null || !checkCustomer())
+                return false;
+            DataRowView drvTicket = (DataRowView)ticketBindingSource.Current;
+            if (drvTicket == null || !checkTicket())
+                return false;
+
+            String ticketCode = tbTicketCode.Text.Trim();
+            String origtc = DrGetStr(drvTicket.Row, gxxfDataSet.Ticket.TicketCodeColumn);
+            if (!ticketCode.Equals(origtc)) {
+                if (MessageBox.Show("確定修改訂單編號?", "訂單編號修改", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    return false;
+
+                if (checkDupTicketCode()) {
+                    MessageBox.Show("訂單編號已存在");
+                    return false;
+                }
+            }
+
+            DataRowView drvJacket = (DataRowView)ticketJacketBindingSource.Current;
+            if (drvJacket == null)
+                return false;
+            DataRowView drvTrousers = (DataRowView)ticketTrousersBindingSource.Current;
+            if (drvTrousers == null)
+                return false;
+
+            using (System.Transactions.TransactionScope updateTransaction = new System.Transactions.TransactionScope()) {
+                if (storeCustomer(drvCustomer.Row))
+                    this.customerTableAdapter.Update(drvCustomer.Row);
+                if (storeTicket(drvTicket.Row))
+                    this.ticketTableAdapter.Update(drvTicket.Row);
+                if (storeTicketJacket(drvJacket.Row))
+                    this.ticketJacketTableAdapter.Update(drvJacket.Row);
+                if (storeTicketTrousers(drvTrousers.Row))
+                    this.ticketTrousersTableAdapter.Update(drvTrousers.Row);
+                updateTransaction.Complete();
+            }
+            return true;
+        }
+
+        private void btnEditCancel_Click(object sender, EventArgs e) {
+            panelEdit.Visible = false;
+            panelMain.Visible = true;
+        }
+        private void btnEditCommit_Click(object sender, EventArgs e) {
+            if (EditMode == 0) {
+                if (!saveNewCustomer())
+                    return;
+            } else if (EditMode == 1) {
+                if (!saveNewTicket())
+                    return;
+            } else if (EditMode == 2) {
+                if (!saveEditTicket())
+                    return;
+            }
+
+            panelEdit.Visible = false;
+
+            showCurrentCustomer();
+            showCurrentTicket();
+            showCurrentTicketJacket();
+            showCurrentTicketTrousers();
+            panelMain.Visible = true;
+        }
+
+        private void unmask_DoubleClick(object sender, EventArgs e) {
+            Form prompt = new Form();
+            prompt.Width = 150;
+            prompt.Height = 90;
+            prompt.Text = "請輸入密碼";
+            TextBox textBox = new TextBox() { Left = 10, Top = 10, Width = 100, UseSystemPasswordChar = true };
+            Button confirmation = new Button() { Left = 10, Top = 30, Width = 40, Text = "Ok" };
+            confirmation.Click += (s, ee) => { prompt.Close(); };
+            prompt.Controls.Add(textBox);
+            prompt.Controls.Add(confirmation);
+            prompt.ShowDialog();
+
+            if (!textBox.Text.Equals(password)) {
+                MessageBox.Show("密碼錯誤");
+                return;
+            }
+
+            TextBox tb = (TextBox)sender;
+            tb.UseSystemPasswordChar = false;
+        }
+
+        private void edit_Enter(object sender, EventArgs e) {
+            Control c = (Control)sender;
+            c.BackColor = Color.Yellow;
+        }
+        private void edit_Leave(object sender, EventArgs e) {
+            Control c = (Control)sender;
+            c.BackColor = Color.White;
+        }
+
+
+
+/*
+        private void btnCustomerDelete_Click(object sender, EventArgs e) {
+            DataRowView drv = (DataRowView)customerBindingSource.Current;
+            if (drv == null) {
+                MessageBox.Show("無選定顧客，無法刪除");
+                return;
+            }
+
+            drv.Delete();
+            if (customerTableAdapter.Update(drv.Row) > 0) {
+                MessageBox.Show("刪除成功");
+            }
+        }
+
+        private void btnTicketDelete_Click(object sender, EventArgs e) {
+            DataRowView drv = (DataRowView)ticketBindingSource.Current;
+            if (drv == null) {
+                MessageBox.Show("無選定訂單，無法刪除");
+                return;
+            }
+
+            String tid = DrGetStr(drv.Row, this.gxxfDataSet.Ticket.TicketIdColumn);
+            drv.Row.Delete();
+            if (ticketTableAdapter.Update(drv.Row) > 0) {
+                DataRow[] rows = gxxfDataSet.TicketJacket.Select("TicketId = '" + tid + "'");
+                foreach (DataRow r in rows) {
+                    r.Delete();
+                    ticketJacketTableAdapter.Update(r);
+                }
+
+                rows = gxxfDataSet.TicketTrousers.Select("TicketId = '" + tid + "'");
+                foreach (DataRow r in rows) {
+                    r.Delete();
+                    ticketTrousersTableAdapter.Update(r);
+                }
+
+                MessageBox.Show("刪除成功");
+            }
+        }
+*/
+
     }
 
     public class Report {

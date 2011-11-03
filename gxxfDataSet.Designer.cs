@@ -1212,19 +1212,13 @@ namespace gxxf {
             
             private global::System.Data.DataColumn columnRemark;
             
-            private global::System.Data.DataColumn columnAddUser;
-            
-            private global::System.Data.DataColumn columnAddDate;
-            
-            private global::System.Data.DataColumn columnModifyUser;
-            
-            private global::System.Data.DataColumn columnModifyDate;
-            
             private global::System.Data.DataColumn columnCompanyName;
             
             private global::System.Data.DataColumn columnCompanyTelephone;
             
             private global::System.Data.DataColumn columnCompanyAddress;
+            
+            private global::System.Data.DataColumn columnCustomerName;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -1357,38 +1351,6 @@ namespace gxxf {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn AddUserColumn {
-                get {
-                    return this.columnAddUser;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn AddDateColumn {
-                get {
-                    return this.columnAddDate;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn ModifyUserColumn {
-                get {
-                    return this.columnModifyUser;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn ModifyDateColumn {
-                get {
-                    return this.columnModifyDate;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public global::System.Data.DataColumn CompanyNameColumn {
                 get {
                     return this.columnCompanyName;
@@ -1408,6 +1370,14 @@ namespace gxxf {
             public global::System.Data.DataColumn CompanyAddressColumn {
                 get {
                     return this.columnCompanyAddress;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn CustomerNameColumn {
+                get {
+                    return this.columnCustomerName;
                 }
             }
             
@@ -1448,25 +1418,7 @@ namespace gxxf {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public TicketRow AddTicketRow(
-                        string TicketCode, 
-                        int CustomerId, 
-                        string OrderDate, 
-                        string PlanDate, 
-                        string CarryDate, 
-                        string TotalPrice, 
-                        string Earnest, 
-                        string AccountReceived, 
-                        string IfCarry, 
-                        string IfPayoff, 
-                        string Remark, 
-                        int AddUser, 
-                        string AddDate, 
-                        int ModifyUser, 
-                        string ModifyDate, 
-                        string CompanyName, 
-                        string CompanyTelephone, 
-                        string CompanyAddress) {
+            public TicketRow AddTicketRow(string TicketCode, int CustomerId, string OrderDate, string PlanDate, string CarryDate, string TotalPrice, string Earnest, string AccountReceived, string IfCarry, string IfPayoff, string Remark, string CompanyName, string CompanyTelephone, string CompanyAddress, string CustomerName) {
                 TicketRow rowTicketRow = ((TicketRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
@@ -1481,13 +1433,10 @@ namespace gxxf {
                         IfCarry,
                         IfPayoff,
                         Remark,
-                        AddUser,
-                        AddDate,
-                        ModifyUser,
-                        ModifyDate,
                         CompanyName,
                         CompanyTelephone,
-                        CompanyAddress};
+                        CompanyAddress,
+                        CustomerName};
                 rowTicketRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowTicketRow);
                 return rowTicketRow;
@@ -1529,13 +1478,10 @@ namespace gxxf {
                 this.columnIfCarry = base.Columns["IfCarry"];
                 this.columnIfPayoff = base.Columns["IfPayoff"];
                 this.columnRemark = base.Columns["Remark"];
-                this.columnAddUser = base.Columns["AddUser"];
-                this.columnAddDate = base.Columns["AddDate"];
-                this.columnModifyUser = base.Columns["ModifyUser"];
-                this.columnModifyDate = base.Columns["ModifyDate"];
                 this.columnCompanyName = base.Columns["CompanyName"];
                 this.columnCompanyTelephone = base.Columns["CompanyTelephone"];
                 this.columnCompanyAddress = base.Columns["CompanyAddress"];
+                this.columnCustomerName = base.Columns["CustomerName"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1565,20 +1511,14 @@ namespace gxxf {
                 base.Columns.Add(this.columnIfPayoff);
                 this.columnRemark = new global::System.Data.DataColumn("Remark", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnRemark);
-                this.columnAddUser = new global::System.Data.DataColumn("AddUser", typeof(int), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnAddUser);
-                this.columnAddDate = new global::System.Data.DataColumn("AddDate", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnAddDate);
-                this.columnModifyUser = new global::System.Data.DataColumn("ModifyUser", typeof(int), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnModifyUser);
-                this.columnModifyDate = new global::System.Data.DataColumn("ModifyDate", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnModifyDate);
                 this.columnCompanyName = new global::System.Data.DataColumn("CompanyName", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnCompanyName);
                 this.columnCompanyTelephone = new global::System.Data.DataColumn("CompanyTelephone", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnCompanyTelephone);
                 this.columnCompanyAddress = new global::System.Data.DataColumn("CompanyAddress", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnCompanyAddress);
+                this.columnCustomerName = new global::System.Data.DataColumn("CustomerName", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCustomerName);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnTicketId}, true));
                 this.columnTicketId.AutoIncrement = true;
@@ -1597,11 +1537,11 @@ namespace gxxf {
                 this.columnIfCarry.MaxLength = 1;
                 this.columnIfPayoff.MaxLength = 1;
                 this.columnRemark.MaxLength = 500;
-                this.columnAddDate.MaxLength = 20;
-                this.columnModifyDate.MaxLength = 20;
                 this.columnCompanyName.MaxLength = 64;
                 this.columnCompanyTelephone.MaxLength = 32;
                 this.columnCompanyAddress.MaxLength = 128;
+                this.columnCustomerName.ReadOnly = true;
+                this.columnCustomerName.MaxLength = 100;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3936,70 +3876,6 @@ namespace gxxf {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public int AddUser {
-                get {
-                    try {
-                        return ((int)(this[this.tableTicket.AddUserColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'AddUser\' in table \'Ticket\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableTicket.AddUserColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string AddDate {
-                get {
-                    try {
-                        return ((string)(this[this.tableTicket.AddDateColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'AddDate\' in table \'Ticket\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableTicket.AddDateColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public int ModifyUser {
-                get {
-                    try {
-                        return ((int)(this[this.tableTicket.ModifyUserColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'ModifyUser\' in table \'Ticket\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableTicket.ModifyUserColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string ModifyDate {
-                get {
-                    try {
-                        return ((string)(this[this.tableTicket.ModifyDateColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'ModifyDate\' in table \'Ticket\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableTicket.ModifyDateColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string CompanyName {
                 get {
                     try {
@@ -4043,6 +3919,22 @@ namespace gxxf {
                 }
                 set {
                     this[this.tableTicket.CompanyAddressColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string CustomerName {
+                get {
+                    try {
+                        return ((string)(this[this.tableTicket.CustomerNameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'CustomerName\' in table \'Ticket\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableTicket.CustomerNameColumn] = value;
                 }
             }
             
@@ -4180,54 +4072,6 @@ namespace gxxf {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsAddUserNull() {
-                return this.IsNull(this.tableTicket.AddUserColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetAddUserNull() {
-                this[this.tableTicket.AddUserColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsAddDateNull() {
-                return this.IsNull(this.tableTicket.AddDateColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetAddDateNull() {
-                this[this.tableTicket.AddDateColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsModifyUserNull() {
-                return this.IsNull(this.tableTicket.ModifyUserColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetModifyUserNull() {
-                this[this.tableTicket.ModifyUserColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsModifyDateNull() {
-                return this.IsNull(this.tableTicket.ModifyDateColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetModifyDateNull() {
-                this[this.tableTicket.ModifyDateColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsCompanyNameNull() {
                 return this.IsNull(this.tableTicket.CompanyNameColumn);
             }
@@ -4260,6 +4104,18 @@ namespace gxxf {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetCompanyAddressNull() {
                 this[this.tableTicket.CompanyAddressColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsCustomerNameNull() {
+                return this.IsNull(this.tableTicket.CustomerNameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetCustomerNameNull() {
+                this[this.tableTicket.CustomerNameColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -7163,39 +7019,14 @@ SELECT customerid, CustomerCode, CustomerName, IDCard, Sex, Birthday, Telephone,
             tableMapping.ColumnMappings.Add("IfCarry", "IfCarry");
             tableMapping.ColumnMappings.Add("IfPayoff", "IfPayoff");
             tableMapping.ColumnMappings.Add("Remark", "Remark");
-            tableMapping.ColumnMappings.Add("AddUser", "AddUser");
-            tableMapping.ColumnMappings.Add("AddDate", "AddDate");
-            tableMapping.ColumnMappings.Add("ModifyUser", "ModifyUser");
-            tableMapping.ColumnMappings.Add("ModifyDate", "ModifyDate");
             tableMapping.ColumnMappings.Add("CompanyName", "CompanyName");
             tableMapping.ColumnMappings.Add("CompanyTelephone", "CompanyTelephone");
             tableMapping.ColumnMappings.Add("CompanyAddress", "CompanyAddress");
+            tableMapping.ColumnMappings.Add("CustomerName", "CustomerName");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = "DELETE FROM [dbo].[Ticket] WHERE (([TicketId] = @Original_TicketId) AND ((@IsNull" +
-                "_TicketCode = 1 AND [TicketCode] IS NULL) OR ([TicketCode] = @Original_TicketCod" +
-                "e)) AND ((@IsNull_CustomerId = 1 AND [CustomerId] IS NULL) OR ([CustomerId] = @O" +
-                "riginal_CustomerId)) AND ((@IsNull_OrderDate = 1 AND [OrderDate] IS NULL) OR ([O" +
-                "rderDate] = @Original_OrderDate)) AND ((@IsNull_PlanDate = 1 AND [PlanDate] IS N" +
-                "ULL) OR ([PlanDate] = @Original_PlanDate)) AND ((@IsNull_CarryDate = 1 AND [Carr" +
-                "yDate] IS NULL) OR ([CarryDate] = @Original_CarryDate)) AND ((@IsNull_TotalPrice" +
-                " = 1 AND [TotalPrice] IS NULL) OR ([TotalPrice] = @Original_TotalPrice)) AND ((@" +
-                "IsNull_Earnest = 1 AND [Earnest] IS NULL) OR ([Earnest] = @Original_Earnest)) AN" +
-                "D ((@IsNull_AccountReceived = 1 AND [AccountReceived] IS NULL) OR ([AccountRecei" +
-                "ved] = @Original_AccountReceived)) AND ((@IsNull_IfCarry = 1 AND [IfCarry] IS NU" +
-                "LL) OR ([IfCarry] = @Original_IfCarry)) AND ((@IsNull_IfPayoff = 1 AND [IfPayoff" +
-                "] IS NULL) OR ([IfPayoff] = @Original_IfPayoff)) AND ((@IsNull_Remark = 1 AND [R" +
-                "emark] IS NULL) OR ([Remark] = @Original_Remark)) AND ((@IsNull_AddUser = 1 AND " +
-                "[AddUser] IS NULL) OR ([AddUser] = @Original_AddUser)) AND ((@IsNull_AddDate = 1" +
-                " AND [AddDate] IS NULL) OR ([AddDate] = @Original_AddDate)) AND ((@IsNull_Modify" +
-                "User = 1 AND [ModifyUser] IS NULL) OR ([ModifyUser] = @Original_ModifyUser)) AND" +
-                " ((@IsNull_ModifyDate = 1 AND [ModifyDate] IS NULL) OR ([ModifyDate] = @Original" +
-                "_ModifyDate)) AND ((@IsNull_CompanyName = 1 AND [CompanyName] IS NULL) OR ([Comp" +
-                "anyName] = @Original_CompanyName)) AND ((@IsNull_CompanyTelephone = 1 AND [Compa" +
-                "nyTelephone] IS NULL) OR ([CompanyTelephone] = @Original_CompanyTelephone)) AND " +
-                "((@IsNull_CompanyAddress = 1 AND [CompanyAddress] IS NULL) OR ([CompanyAddress] " +
-                "= @Original_CompanyAddress)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [Ticket] WHERE (([TicketId] = @Original_TicketId) AND ((@IsNull_TicketCode = 1 AND [TicketCode] IS NULL) OR ([TicketCode] = @Original_TicketCode)) AND ((@IsNull_CustomerId = 1 AND [CustomerId] IS NULL) OR ([CustomerId] = @Original_CustomerId)) AND ((@IsNull_OrderDate = 1 AND [OrderDate] IS NULL) OR ([OrderDate] = @Original_OrderDate)) AND ((@IsNull_PlanDate = 1 AND [PlanDate] IS NULL) OR ([PlanDate] = @Original_PlanDate)) AND ((@IsNull_CarryDate = 1 AND [CarryDate] IS NULL) OR ([CarryDate] = @Original_CarryDate)) AND ((@IsNull_TotalPrice = 1 AND [TotalPrice] IS NULL) OR ([TotalPrice] = @Original_TotalPrice)) AND ((@IsNull_Earnest = 1 AND [Earnest] IS NULL) OR ([Earnest] = @Original_Earnest)) AND ((@IsNull_AccountReceived = 1 AND [AccountReceived] IS NULL) OR ([AccountReceived] = @Original_AccountReceived)) AND ((@IsNull_IfCarry = 1 AND [IfCarry] IS NULL) OR ([IfCarry] = @Original_IfCarry)) AND ((@IsNull_IfPayoff = 1 AND [IfPayoff] IS NULL) OR ([IfPayoff] = @Original_IfPayoff)) AND ((@IsNull_Remark = 1 AND [Remark] IS NULL) OR ([Remark] = @Original_Remark)) AND ((@IsNull_CompanyName = 1 AND [CompanyName] IS NULL) OR ([CompanyName] = @Original_CompanyName)) AND ((@IsNull_CompanyTelephone = 1 AND [CompanyTelephone] IS NULL) OR ([CompanyTelephone] = @Original_CompanyTelephone)) AND ((@IsNull_CompanyAddress = 1 AND [CompanyAddress] IS NULL) OR ([CompanyAddress] = @Original_CompanyAddress)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_TicketId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TicketId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_TicketCode", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TicketCode", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -7220,14 +7051,6 @@ SELECT customerid, CustomerCode, CustomerName, IDCard, Sex, Birthday, Telephone,
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_IfPayoff", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IfPayoff", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Remark", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Remark", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Remark", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Remark", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AddUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddUser", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AddUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddUser", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AddDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AddDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ModifyUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyUser", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ModifyUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyUser", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ModifyDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ModifyDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CompanyName", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyName", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CompanyName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CompanyTelephone", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyTelephone", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -7236,8 +7059,8 @@ SELECT customerid, CustomerCode, CustomerName, IDCard, Sex, Birthday, Telephone,
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CompanyAddress", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyAddress", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [dbo].[Ticket] ([TicketCode], [CustomerId], [OrderDate], [PlanDate], [CarryDate], [TotalPrice], [Earnest], [AccountReceived], [IfCarry], [IfPayoff], [Remark], [AddUser], [AddDate], [ModifyUser], [ModifyDate], [CompanyName], [CompanyTelephone], [CompanyAddress]) VALUES (@TicketCode, @CustomerId, @OrderDate, @PlanDate, @CarryDate, @TotalPrice, @Earnest, @AccountReceived, @IfCarry, @IfPayoff, @Remark, @AddUser, @AddDate, @ModifyUser, @ModifyDate, @CompanyName, @CompanyTelephone, @CompanyAddress);
-SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPrice, Earnest, AccountReceived, IfCarry, IfPayoff, Remark, AddUser, AddDate, ModifyUser, ModifyDate, CompanyName, CompanyTelephone, CompanyAddress FROM Ticket WHERE (TicketId = SCOPE_IDENTITY())";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [Ticket] ([TicketCode], [CustomerId], [OrderDate], [PlanDate], [CarryDate], [TotalPrice], [Earnest], [AccountReceived], [IfCarry], [IfPayoff], [Remark], [CompanyName], [CompanyTelephone], [CompanyAddress]) VALUES (@TicketCode, @CustomerId, @OrderDate, @PlanDate, @CarryDate, @TotalPrice, @Earnest, @AccountReceived, @IfCarry, @IfPayoff, @Remark, @CompanyName, @CompanyTelephone, @CompanyAddress);
+SELECT TicketId, TicketCode, CustomerId, (SELECT CustomerName FROM Customer WHERE (customerid = Ticket.CustomerId)) AS CustomerName, OrderDate, PlanDate, CarryDate, TotalPrice, Earnest, AccountReceived, IfCarry, IfPayoff, Remark, CompanyName, CompanyTelephone, CompanyAddress FROM Ticket WHERE (TicketId = SCOPE_IDENTITY())";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TicketCode", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TicketCode", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CustomerId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CustomerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -7250,47 +7073,38 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IfCarry", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IfCarry", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IfPayoff", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IfPayoff", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Remark", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Remark", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AddUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddUser", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AddDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ModifyUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyUser", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ModifyDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CompanyName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CompanyTelephone", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyTelephone", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CompanyAddress", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyAddress", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = "UPDATE [dbo].[Ticket] SET [TicketCode] = @TicketCode, [CustomerId] = @CustomerId," +
-                " [OrderDate] = @OrderDate, [PlanDate] = @PlanDate, [CarryDate] = @CarryDate, [To" +
-                "talPrice] = @TotalPrice, [Earnest] = @Earnest, [AccountReceived] = @AccountRecei" +
-                "ved, [IfCarry] = @IfCarry, [IfPayoff] = @IfPayoff, [Remark] = @Remark, [AddUser]" +
-                " = @AddUser, [AddDate] = @AddDate, [ModifyUser] = @ModifyUser, [ModifyDate] = @M" +
-                "odifyDate, [CompanyName] = @CompanyName, [CompanyTelephone] = @CompanyTelephone," +
-                " [CompanyAddress] = @CompanyAddress WHERE (([TicketId] = @Original_TicketId) AND" +
-                " ((@IsNull_TicketCode = 1 AND [TicketCode] IS NULL) OR ([TicketCode] = @Original" +
-                "_TicketCode)) AND ((@IsNull_CustomerId = 1 AND [CustomerId] IS NULL) OR ([Custom" +
-                "erId] = @Original_CustomerId)) AND ((@IsNull_OrderDate = 1 AND [OrderDate] IS NU" +
-                "LL) OR ([OrderDate] = @Original_OrderDate)) AND ((@IsNull_PlanDate = 1 AND [Plan" +
-                "Date] IS NULL) OR ([PlanDate] = @Original_PlanDate)) AND ((@IsNull_CarryDate = 1" +
-                " AND [CarryDate] IS NULL) OR ([CarryDate] = @Original_CarryDate)) AND ((@IsNull_" +
-                "TotalPrice = 1 AND [TotalPrice] IS NULL) OR ([TotalPrice] = @Original_TotalPrice" +
-                ")) AND ((@IsNull_Earnest = 1 AND [Earnest] IS NULL) OR ([Earnest] = @Original_Ea" +
-                "rnest)) AND ((@IsNull_AccountReceived = 1 AND [AccountReceived] IS NULL) OR ([Ac" +
-                "countReceived] = @Original_AccountReceived)) AND ((@IsNull_IfCarry = 1 AND [IfCa" +
-                "rry] IS NULL) OR ([IfCarry] = @Original_IfCarry)) AND ((@IsNull_IfPayoff = 1 AND" +
-                " [IfPayoff] IS NULL) OR ([IfPayoff] = @Original_IfPayoff)) AND ((@IsNull_Remark " +
-                "= 1 AND [Remark] IS NULL) OR ([Remark] = @Original_Remark)) AND ((@IsNull_AddUse" +
-                "r = 1 AND [AddUser] IS NULL) OR ([AddUser] = @Original_AddUser)) AND ((@IsNull_A" +
-                "ddDate = 1 AND [AddDate] IS NULL) OR ([AddDate] = @Original_AddDate)) AND ((@IsN" +
-                "ull_ModifyUser = 1 AND [ModifyUser] IS NULL) OR ([ModifyUser] = @Original_Modify" +
-                "User)) AND ((@IsNull_ModifyDate = 1 AND [ModifyDate] IS NULL) OR ([ModifyDate] =" +
-                " @Original_ModifyDate)) AND ((@IsNull_CompanyName = 1 AND [CompanyName] IS NULL)" +
-                " OR ([CompanyName] = @Original_CompanyName)) AND ((@IsNull_CompanyTelephone = 1 " +
-                "AND [CompanyTelephone] IS NULL) OR ([CompanyTelephone] = @Original_CompanyTeleph" +
-                "one)) AND ((@IsNull_CompanyAddress = 1 AND [CompanyAddress] IS NULL) OR ([Compan" +
-                "yAddress] = @Original_CompanyAddress)));\r\nSELECT TicketId, TicketCode, CustomerI" +
-                "d, OrderDate, PlanDate, CarryDate, TotalPrice, Earnest, AccountReceived, IfCarry" +
-                ", IfPayoff, Remark, AddUser, AddDate, ModifyUser, ModifyDate, CompanyName, Compa" +
-                "nyTelephone, CompanyAddress FROM Ticket WHERE (TicketId = @TicketId)";
+            this._adapter.UpdateCommand.CommandText = "UPDATE [Ticket] SET [TicketCode] = @TicketCode, [CustomerId] = @CustomerId, [Orde" +
+                "rDate] = @OrderDate, [PlanDate] = @PlanDate, [CarryDate] = @CarryDate, [TotalPri" +
+                "ce] = @TotalPrice, [Earnest] = @Earnest, [AccountReceived] = @AccountReceived, [" +
+                "IfCarry] = @IfCarry, [IfPayoff] = @IfPayoff, [Remark] = @Remark, [CompanyName] =" +
+                " @CompanyName, [CompanyTelephone] = @CompanyTelephone, [CompanyAddress] = @Compa" +
+                "nyAddress WHERE (([TicketId] = @Original_TicketId) AND ((@IsNull_TicketCode = 1 " +
+                "AND [TicketCode] IS NULL) OR ([TicketCode] = @Original_TicketCode)) AND ((@IsNul" +
+                "l_CustomerId = 1 AND [CustomerId] IS NULL) OR ([CustomerId] = @Original_Customer" +
+                "Id)) AND ((@IsNull_OrderDate = 1 AND [OrderDate] IS NULL) OR ([OrderDate] = @Ori" +
+                "ginal_OrderDate)) AND ((@IsNull_PlanDate = 1 AND [PlanDate] IS NULL) OR ([PlanDa" +
+                "te] = @Original_PlanDate)) AND ((@IsNull_CarryDate = 1 AND [CarryDate] IS NULL) " +
+                "OR ([CarryDate] = @Original_CarryDate)) AND ((@IsNull_TotalPrice = 1 AND [TotalP" +
+                "rice] IS NULL) OR ([TotalPrice] = @Original_TotalPrice)) AND ((@IsNull_Earnest =" +
+                " 1 AND [Earnest] IS NULL) OR ([Earnest] = @Original_Earnest)) AND ((@IsNull_Acco" +
+                "untReceived = 1 AND [AccountReceived] IS NULL) OR ([AccountReceived] = @Original" +
+                "_AccountReceived)) AND ((@IsNull_IfCarry = 1 AND [IfCarry] IS NULL) OR ([IfCarry" +
+                "] = @Original_IfCarry)) AND ((@IsNull_IfPayoff = 1 AND [IfPayoff] IS NULL) OR ([" +
+                "IfPayoff] = @Original_IfPayoff)) AND ((@IsNull_Remark = 1 AND [Remark] IS NULL) " +
+                "OR ([Remark] = @Original_Remark)) AND ((@IsNull_CompanyName = 1 AND [CompanyName" +
+                "] IS NULL) OR ([CompanyName] = @Original_CompanyName)) AND ((@IsNull_CompanyTele" +
+                "phone = 1 AND [CompanyTelephone] IS NULL) OR ([CompanyTelephone] = @Original_Com" +
+                "panyTelephone)) AND ((@IsNull_CompanyAddress = 1 AND [CompanyAddress] IS NULL) O" +
+                "R ([CompanyAddress] = @Original_CompanyAddress)));\r\nSELECT TicketId, TicketCode," +
+                " CustomerId, (SELECT CustomerName FROM Customer WHERE (customerid = Ticket.Custo" +
+                "merId)) AS CustomerName, OrderDate, PlanDate, CarryDate, TotalPrice, Earnest, Ac" +
+                "countReceived, IfCarry, IfPayoff, Remark, CompanyName, CompanyTelephone, Company" +
+                "Address FROM Ticket WHERE (TicketId = @TicketId)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TicketCode", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TicketCode", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CustomerId", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CustomerId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -7303,10 +7117,6 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IfCarry", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IfCarry", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IfPayoff", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IfPayoff", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Remark", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Remark", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AddUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddUser", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@AddDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ModifyUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyUser", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ModifyDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CompanyName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyName", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CompanyTelephone", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyTelephone", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CompanyAddress", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyAddress", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -7333,14 +7143,6 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_IfPayoff", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "IfPayoff", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Remark", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Remark", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Remark", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Remark", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AddUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddUser", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AddUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddUser", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_AddDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_AddDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "AddDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ModifyUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyUser", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ModifyUser", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyUser", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_ModifyDate", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyDate", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ModifyDate", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ModifyDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CompanyName", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyName", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CompanyName", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyName", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_CompanyTelephone", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CompanyTelephone", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -7363,10 +7165,7 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPri" +
-                "ce, Earnest, AccountReceived, IfCarry, IfPayoff, Remark, AddUser, AddDate, Modif" +
-                "yUser, ModifyDate, CompanyName, CompanyTelephone, CompanyAddress FROM dbo.Ticket" +
-                "";
+            this._commandCollection[0].CommandText = @"SELECT TicketId, TicketCode, CustomerId, (SELECT CustomerName FROM Customer WHERE Customer.customerid = Ticket.CustomerId) as CustomerName, OrderDate, PlanDate, CarryDate, TotalPrice, Earnest, AccountReceived, IfCarry, IfPayoff, Remark, CompanyName, CompanyTelephone, CompanyAddress FROM Ticket";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -7427,26 +7226,7 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(
-                    int Original_TicketId, 
-                    string Original_TicketCode, 
-                    global::System.Nullable<int> Original_CustomerId, 
-                    string Original_OrderDate, 
-                    string Original_PlanDate, 
-                    string Original_CarryDate, 
-                    string Original_TotalPrice, 
-                    string Original_Earnest, 
-                    string Original_AccountReceived, 
-                    string Original_IfCarry, 
-                    string Original_IfPayoff, 
-                    string Original_Remark, 
-                    global::System.Nullable<int> Original_AddUser, 
-                    string Original_AddDate, 
-                    global::System.Nullable<int> Original_ModifyUser, 
-                    string Original_ModifyDate, 
-                    string Original_CompanyName, 
-                    string Original_CompanyTelephone, 
-                    string Original_CompanyAddress) {
+        public virtual int Delete(int Original_TicketId, string Original_TicketCode, global::System.Nullable<int> Original_CustomerId, string Original_OrderDate, string Original_PlanDate, string Original_CarryDate, string Original_TotalPrice, string Original_Earnest, string Original_AccountReceived, string Original_IfCarry, string Original_IfPayoff, string Original_Remark, string Original_CompanyName, string Original_CompanyTelephone, string Original_CompanyAddress) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_TicketId));
             if ((Original_TicketCode == null)) {
                 this.Adapter.DeleteCommand.Parameters[1].Value = ((object)(1));
@@ -7536,61 +7316,29 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
                 this.Adapter.DeleteCommand.Parameters[21].Value = ((object)(0));
                 this.Adapter.DeleteCommand.Parameters[22].Value = ((string)(Original_Remark));
             }
-            if ((Original_AddUser.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[23].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[24].Value = ((int)(Original_AddUser.Value));
-            }
-            else {
+            if ((Original_CompanyName == null)) {
                 this.Adapter.DeleteCommand.Parameters[23].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[24].Value = global::System.DBNull.Value;
             }
-            if ((Original_AddDate == null)) {
+            else {
+                this.Adapter.DeleteCommand.Parameters[23].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[24].Value = ((string)(Original_CompanyName));
+            }
+            if ((Original_CompanyTelephone == null)) {
                 this.Adapter.DeleteCommand.Parameters[25].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[26].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.DeleteCommand.Parameters[25].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[26].Value = ((string)(Original_AddDate));
+                this.Adapter.DeleteCommand.Parameters[26].Value = ((string)(Original_CompanyTelephone));
             }
-            if ((Original_ModifyUser.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[27].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[28].Value = ((int)(Original_ModifyUser.Value));
-            }
-            else {
+            if ((Original_CompanyAddress == null)) {
                 this.Adapter.DeleteCommand.Parameters[27].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[28].Value = global::System.DBNull.Value;
             }
-            if ((Original_ModifyDate == null)) {
-                this.Adapter.DeleteCommand.Parameters[29].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[30].Value = global::System.DBNull.Value;
-            }
             else {
-                this.Adapter.DeleteCommand.Parameters[29].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[30].Value = ((string)(Original_ModifyDate));
-            }
-            if ((Original_CompanyName == null)) {
-                this.Adapter.DeleteCommand.Parameters[31].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[32].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[31].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[32].Value = ((string)(Original_CompanyName));
-            }
-            if ((Original_CompanyTelephone == null)) {
-                this.Adapter.DeleteCommand.Parameters[33].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[34].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[33].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[34].Value = ((string)(Original_CompanyTelephone));
-            }
-            if ((Original_CompanyAddress == null)) {
-                this.Adapter.DeleteCommand.Parameters[35].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[36].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[35].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[36].Value = ((string)(Original_CompanyAddress));
+                this.Adapter.DeleteCommand.Parameters[27].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[28].Value = ((string)(Original_CompanyAddress));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -7612,25 +7360,7 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(
-                    string TicketCode, 
-                    global::System.Nullable<int> CustomerId, 
-                    string OrderDate, 
-                    string PlanDate, 
-                    string CarryDate, 
-                    string TotalPrice, 
-                    string Earnest, 
-                    string AccountReceived, 
-                    string IfCarry, 
-                    string IfPayoff, 
-                    string Remark, 
-                    global::System.Nullable<int> AddUser, 
-                    string AddDate, 
-                    global::System.Nullable<int> ModifyUser, 
-                    string ModifyDate, 
-                    string CompanyName, 
-                    string CompanyTelephone, 
-                    string CompanyAddress) {
+        public virtual int Insert(string TicketCode, global::System.Nullable<int> CustomerId, string OrderDate, string PlanDate, string CarryDate, string TotalPrice, string Earnest, string AccountReceived, string IfCarry, string IfPayoff, string Remark, string CompanyName, string CompanyTelephone, string CompanyAddress) {
             if ((TicketCode == null)) {
                 this.Adapter.InsertCommand.Parameters[0].Value = global::System.DBNull.Value;
             }
@@ -7697,47 +7427,23 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
             else {
                 this.Adapter.InsertCommand.Parameters[10].Value = ((string)(Remark));
             }
-            if ((AddUser.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[11].Value = ((int)(AddUser.Value));
-            }
-            else {
+            if ((CompanyName == null)) {
                 this.Adapter.InsertCommand.Parameters[11].Value = global::System.DBNull.Value;
             }
-            if ((AddDate == null)) {
+            else {
+                this.Adapter.InsertCommand.Parameters[11].Value = ((string)(CompanyName));
+            }
+            if ((CompanyTelephone == null)) {
                 this.Adapter.InsertCommand.Parameters[12].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[12].Value = ((string)(AddDate));
-            }
-            if ((ModifyUser.HasValue == true)) {
-                this.Adapter.InsertCommand.Parameters[13].Value = ((int)(ModifyUser.Value));
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[13].Value = global::System.DBNull.Value;
-            }
-            if ((ModifyDate == null)) {
-                this.Adapter.InsertCommand.Parameters[14].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[14].Value = ((string)(ModifyDate));
-            }
-            if ((CompanyName == null)) {
-                this.Adapter.InsertCommand.Parameters[15].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[15].Value = ((string)(CompanyName));
-            }
-            if ((CompanyTelephone == null)) {
-                this.Adapter.InsertCommand.Parameters[16].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.InsertCommand.Parameters[16].Value = ((string)(CompanyTelephone));
+                this.Adapter.InsertCommand.Parameters[12].Value = ((string)(CompanyTelephone));
             }
             if ((CompanyAddress == null)) {
-                this.Adapter.InsertCommand.Parameters[17].Value = global::System.DBNull.Value;
+                this.Adapter.InsertCommand.Parameters[13].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.InsertCommand.Parameters[17].Value = ((string)(CompanyAddress));
+                this.Adapter.InsertCommand.Parameters[13].Value = ((string)(CompanyAddress));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -7771,10 +7477,6 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
                     string IfCarry, 
                     string IfPayoff, 
                     string Remark, 
-                    global::System.Nullable<int> AddUser, 
-                    string AddDate, 
-                    global::System.Nullable<int> ModifyUser, 
-                    string ModifyDate, 
                     string CompanyName, 
                     string CompanyTelephone, 
                     string CompanyAddress, 
@@ -7790,10 +7492,6 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
                     string Original_IfCarry, 
                     string Original_IfPayoff, 
                     string Original_Remark, 
-                    global::System.Nullable<int> Original_AddUser, 
-                    string Original_AddDate, 
-                    global::System.Nullable<int> Original_ModifyUser, 
-                    string Original_ModifyDate, 
                     string Original_CompanyName, 
                     string Original_CompanyTelephone, 
                     string Original_CompanyAddress, 
@@ -7864,194 +7562,138 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
             else {
                 this.Adapter.UpdateCommand.Parameters[10].Value = ((string)(Remark));
             }
-            if ((AddUser.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[11].Value = ((int)(AddUser.Value));
-            }
-            else {
+            if ((CompanyName == null)) {
                 this.Adapter.UpdateCommand.Parameters[11].Value = global::System.DBNull.Value;
             }
-            if ((AddDate == null)) {
+            else {
+                this.Adapter.UpdateCommand.Parameters[11].Value = ((string)(CompanyName));
+            }
+            if ((CompanyTelephone == null)) {
                 this.Adapter.UpdateCommand.Parameters[12].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[12].Value = ((string)(AddDate));
+                this.Adapter.UpdateCommand.Parameters[12].Value = ((string)(CompanyTelephone));
             }
-            if ((ModifyUser.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[13].Value = ((int)(ModifyUser.Value));
-            }
-            else {
+            if ((CompanyAddress == null)) {
                 this.Adapter.UpdateCommand.Parameters[13].Value = global::System.DBNull.Value;
             }
-            if ((ModifyDate == null)) {
-                this.Adapter.UpdateCommand.Parameters[14].Value = global::System.DBNull.Value;
-            }
             else {
-                this.Adapter.UpdateCommand.Parameters[14].Value = ((string)(ModifyDate));
+                this.Adapter.UpdateCommand.Parameters[13].Value = ((string)(CompanyAddress));
             }
-            if ((CompanyName == null)) {
-                this.Adapter.UpdateCommand.Parameters[15].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[15].Value = ((string)(CompanyName));
-            }
-            if ((CompanyTelephone == null)) {
+            this.Adapter.UpdateCommand.Parameters[14].Value = ((int)(Original_TicketId));
+            if ((Original_TicketCode == null)) {
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[16].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[16].Value = ((string)(CompanyTelephone));
+                this.Adapter.UpdateCommand.Parameters[15].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((string)(Original_TicketCode));
             }
-            if ((CompanyAddress == null)) {
-                this.Adapter.UpdateCommand.Parameters[17].Value = global::System.DBNull.Value;
+            if ((Original_CustomerId.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[17].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[18].Value = ((int)(Original_CustomerId.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[17].Value = ((string)(CompanyAddress));
+                this.Adapter.UpdateCommand.Parameters[17].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[18].Value = global::System.DBNull.Value;
             }
-            this.Adapter.UpdateCommand.Parameters[18].Value = ((int)(Original_TicketId));
-            if ((Original_TicketCode == null)) {
+            if ((Original_OrderDate == null)) {
                 this.Adapter.UpdateCommand.Parameters[19].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[20].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[19].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[20].Value = ((string)(Original_TicketCode));
+                this.Adapter.UpdateCommand.Parameters[20].Value = ((string)(Original_OrderDate));
             }
-            if ((Original_CustomerId.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[21].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[22].Value = ((int)(Original_CustomerId.Value));
-            }
-            else {
+            if ((Original_PlanDate == null)) {
                 this.Adapter.UpdateCommand.Parameters[21].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[22].Value = global::System.DBNull.Value;
             }
-            if ((Original_OrderDate == null)) {
+            else {
+                this.Adapter.UpdateCommand.Parameters[21].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[22].Value = ((string)(Original_PlanDate));
+            }
+            if ((Original_CarryDate == null)) {
                 this.Adapter.UpdateCommand.Parameters[23].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[24].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[23].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[24].Value = ((string)(Original_OrderDate));
+                this.Adapter.UpdateCommand.Parameters[24].Value = ((string)(Original_CarryDate));
             }
-            if ((Original_PlanDate == null)) {
+            if ((Original_TotalPrice == null)) {
                 this.Adapter.UpdateCommand.Parameters[25].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[26].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[25].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[26].Value = ((string)(Original_PlanDate));
+                this.Adapter.UpdateCommand.Parameters[26].Value = ((string)(Original_TotalPrice));
             }
-            if ((Original_CarryDate == null)) {
+            if ((Original_Earnest == null)) {
                 this.Adapter.UpdateCommand.Parameters[27].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[28].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[27].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[28].Value = ((string)(Original_CarryDate));
+                this.Adapter.UpdateCommand.Parameters[28].Value = ((string)(Original_Earnest));
             }
-            if ((Original_TotalPrice == null)) {
+            if ((Original_AccountReceived == null)) {
                 this.Adapter.UpdateCommand.Parameters[29].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[30].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[29].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[30].Value = ((string)(Original_TotalPrice));
+                this.Adapter.UpdateCommand.Parameters[30].Value = ((string)(Original_AccountReceived));
             }
-            if ((Original_Earnest == null)) {
+            if ((Original_IfCarry == null)) {
                 this.Adapter.UpdateCommand.Parameters[31].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[32].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[31].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[32].Value = ((string)(Original_Earnest));
+                this.Adapter.UpdateCommand.Parameters[32].Value = ((string)(Original_IfCarry));
             }
-            if ((Original_AccountReceived == null)) {
+            if ((Original_IfPayoff == null)) {
                 this.Adapter.UpdateCommand.Parameters[33].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[34].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[33].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[34].Value = ((string)(Original_AccountReceived));
+                this.Adapter.UpdateCommand.Parameters[34].Value = ((string)(Original_IfPayoff));
             }
-            if ((Original_IfCarry == null)) {
+            if ((Original_Remark == null)) {
                 this.Adapter.UpdateCommand.Parameters[35].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[36].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[35].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[36].Value = ((string)(Original_IfCarry));
+                this.Adapter.UpdateCommand.Parameters[36].Value = ((string)(Original_Remark));
             }
-            if ((Original_IfPayoff == null)) {
+            if ((Original_CompanyName == null)) {
                 this.Adapter.UpdateCommand.Parameters[37].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[38].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[37].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[38].Value = ((string)(Original_IfPayoff));
+                this.Adapter.UpdateCommand.Parameters[38].Value = ((string)(Original_CompanyName));
             }
-            if ((Original_Remark == null)) {
+            if ((Original_CompanyTelephone == null)) {
                 this.Adapter.UpdateCommand.Parameters[39].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[40].Value = global::System.DBNull.Value;
             }
             else {
                 this.Adapter.UpdateCommand.Parameters[39].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[40].Value = ((string)(Original_Remark));
+                this.Adapter.UpdateCommand.Parameters[40].Value = ((string)(Original_CompanyTelephone));
             }
-            if ((Original_AddUser.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[41].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[42].Value = ((int)(Original_AddUser.Value));
-            }
-            else {
+            if ((Original_CompanyAddress == null)) {
                 this.Adapter.UpdateCommand.Parameters[41].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[42].Value = global::System.DBNull.Value;
             }
-            if ((Original_AddDate == null)) {
-                this.Adapter.UpdateCommand.Parameters[43].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[44].Value = global::System.DBNull.Value;
-            }
             else {
-                this.Adapter.UpdateCommand.Parameters[43].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[44].Value = ((string)(Original_AddDate));
+                this.Adapter.UpdateCommand.Parameters[41].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[42].Value = ((string)(Original_CompanyAddress));
             }
-            if ((Original_ModifyUser.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[45].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[46].Value = ((int)(Original_ModifyUser.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[45].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[46].Value = global::System.DBNull.Value;
-            }
-            if ((Original_ModifyDate == null)) {
-                this.Adapter.UpdateCommand.Parameters[47].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[48].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[47].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[48].Value = ((string)(Original_ModifyDate));
-            }
-            if ((Original_CompanyName == null)) {
-                this.Adapter.UpdateCommand.Parameters[49].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[50].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[49].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[50].Value = ((string)(Original_CompanyName));
-            }
-            if ((Original_CompanyTelephone == null)) {
-                this.Adapter.UpdateCommand.Parameters[51].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[52].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[51].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[52].Value = ((string)(Original_CompanyTelephone));
-            }
-            if ((Original_CompanyAddress == null)) {
-                this.Adapter.UpdateCommand.Parameters[53].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[54].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[53].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[54].Value = ((string)(Original_CompanyAddress));
-            }
-            this.Adapter.UpdateCommand.Parameters[55].Value = ((int)(TicketId));
+            this.Adapter.UpdateCommand.Parameters[43].Value = ((int)(TicketId));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -8084,10 +7726,6 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
                     string IfCarry, 
                     string IfPayoff, 
                     string Remark, 
-                    global::System.Nullable<int> AddUser, 
-                    string AddDate, 
-                    global::System.Nullable<int> ModifyUser, 
-                    string ModifyDate, 
                     string CompanyName, 
                     string CompanyTelephone, 
                     string CompanyAddress, 
@@ -8103,14 +7741,10 @@ SELECT TicketId, TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPr
                     string Original_IfCarry, 
                     string Original_IfPayoff, 
                     string Original_Remark, 
-                    global::System.Nullable<int> Original_AddUser, 
-                    string Original_AddDate, 
-                    global::System.Nullable<int> Original_ModifyUser, 
-                    string Original_ModifyDate, 
                     string Original_CompanyName, 
                     string Original_CompanyTelephone, 
                     string Original_CompanyAddress) {
-            return this.Update(TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPrice, Earnest, AccountReceived, IfCarry, IfPayoff, Remark, AddUser, AddDate, ModifyUser, ModifyDate, CompanyName, CompanyTelephone, CompanyAddress, Original_TicketId, Original_TicketCode, Original_CustomerId, Original_OrderDate, Original_PlanDate, Original_CarryDate, Original_TotalPrice, Original_Earnest, Original_AccountReceived, Original_IfCarry, Original_IfPayoff, Original_Remark, Original_AddUser, Original_AddDate, Original_ModifyUser, Original_ModifyDate, Original_CompanyName, Original_CompanyTelephone, Original_CompanyAddress, Original_TicketId);
+            return this.Update(TicketCode, CustomerId, OrderDate, PlanDate, CarryDate, TotalPrice, Earnest, AccountReceived, IfCarry, IfPayoff, Remark, CompanyName, CompanyTelephone, CompanyAddress, Original_TicketId, Original_TicketCode, Original_CustomerId, Original_OrderDate, Original_PlanDate, Original_CarryDate, Original_TotalPrice, Original_Earnest, Original_AccountReceived, Original_IfCarry, Original_IfPayoff, Original_Remark, Original_CompanyName, Original_CompanyTelephone, Original_CompanyAddress, Original_TicketId);
         }
     }
     
