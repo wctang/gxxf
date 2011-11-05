@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource10 = new Microsoft.Reporting.WinForms.ReportDataSource();
-            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource11 = new Microsoft.Reporting.WinForms.ReportDataSource();
-            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource12 = new Microsoft.Reporting.WinForms.ReportDataSource();
+            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource13 = new Microsoft.Reporting.WinForms.ReportDataSource();
+            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource14 = new Microsoft.Reporting.WinForms.ReportDataSource();
+            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource15 = new Microsoft.Reporting.WinForms.ReportDataSource();
             this.ticketBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gxxfDataSet = new gxxf.gxxfDataSet();
             this.ticketJacketBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -371,6 +371,7 @@
             this.rvReport = new Microsoft.Reporting.WinForms.ReportViewer();
             this.panelPrint = new System.Windows.Forms.Panel();
             this.btnBack = new System.Windows.Forms.Button();
+            this.lbLoginPrompt = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ticketBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gxxfDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ticketJacketBindingSource)).BeginInit();
@@ -1288,6 +1289,7 @@
             // panelLogin
             // 
             this.panelLogin.Controls.Add(this.btnLogin);
+            this.panelLogin.Controls.Add(this.lbLoginPrompt);
             this.panelLogin.Controls.Add(this.label47);
             this.panelLogin.Controls.Add(this.label46);
             this.panelLogin.Controls.Add(this.tbPassword);
@@ -1339,6 +1341,8 @@
             this.tbPassword.TabIndex = 1;
             this.tbPassword.Text = "z4578";
             this.tbPassword.UseSystemPasswordChar = true;
+            this.tbPassword.Enter += new System.EventHandler(this.edit_Enter);
+            this.tbPassword.Leave += new System.EventHandler(this.edit_Leave);
             // 
             // tbUsername
             // 
@@ -1349,6 +1353,8 @@
             this.tbUsername.Size = new System.Drawing.Size(285, 25);
             this.tbUsername.TabIndex = 0;
             this.tbUsername.Text = "a4578";
+            this.tbUsername.Enter += new System.EventHandler(this.edit_Enter);
+            this.tbUsername.Leave += new System.EventHandler(this.edit_Leave);
             // 
             // appUserTableAdapter
             // 
@@ -4368,15 +4374,15 @@
             // 
             // rvReport
             // 
-            reportDataSource10.Name = "Ticket";
-            reportDataSource10.Value = this.ticketBindingSource;
-            reportDataSource11.Name = "TicketJacket";
-            reportDataSource11.Value = this.ticketJacketBindingSource;
-            reportDataSource12.Name = "TicketTrousers";
-            reportDataSource12.Value = this.ticketTrousersBindingSource;
-            this.rvReport.LocalReport.DataSources.Add(reportDataSource10);
-            this.rvReport.LocalReport.DataSources.Add(reportDataSource11);
-            this.rvReport.LocalReport.DataSources.Add(reportDataSource12);
+            reportDataSource13.Name = "Ticket";
+            reportDataSource13.Value = this.ticketBindingSource;
+            reportDataSource14.Name = "TicketJacket";
+            reportDataSource14.Value = this.ticketJacketBindingSource;
+            reportDataSource15.Name = "TicketTrousers";
+            reportDataSource15.Value = this.ticketTrousersBindingSource;
+            this.rvReport.LocalReport.DataSources.Add(reportDataSource13);
+            this.rvReport.LocalReport.DataSources.Add(reportDataSource14);
+            this.rvReport.LocalReport.DataSources.Add(reportDataSource15);
             this.rvReport.LocalReport.ReportEmbeddedResource = "gxxf.TicketReport.rdlc";
             this.rvReport.Location = new System.Drawing.Point(6, 61);
             this.rvReport.Name = "rvReport";
@@ -4403,6 +4409,14 @@
             this.btnBack.Text = "返回";
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
+            // 
+            // lbLoginPrompt
+            // 
+            this.lbLoginPrompt.Location = new System.Drawing.Point(11, 131);
+            this.lbLoginPrompt.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lbLoginPrompt.Name = "lbLoginPrompt";
+            this.lbLoginPrompt.Size = new System.Drawing.Size(340, 41);
+            this.lbLoginPrompt.TabIndex = 1;
             // 
             // MainForm
             // 
@@ -4809,6 +4823,7 @@
         private System.Windows.Forms.Button btnParameterNew;
         private System.Windows.Forms.Button btnParameterDelete;
         private System.Windows.Forms.Button btnParameterUpdate;
+        private System.Windows.Forms.Label lbLoginPrompt;
     }
 }
 

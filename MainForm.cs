@@ -28,38 +28,7 @@ namespace gxxf {
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
-            this.appUserTableAdapter.Fill(this.gxxfDataSet.AppUser);
-            this.parameterTableAdapter.Fill(this.gxxfDataSet.Parameter);
-
-            dgvCustomerTicket.BindingContext = new BindingContext();
-            dgvQueryTicket.BindingContext = new BindingContext();
-
-            setupParameter(cbJianKuanP);
-            setupParameter(cbShangWeiP);
-            setupParameter(cbXiaWeiP);
-            setupParameter(cbXiuChangP);
-            setupParameter(cbXiuKouP);
-            setupParameter(cbQianXiongP);
-            setupParameter(cbHouBeiP);
-            setupParameter(cbShenChangP);
-            setupParameter(cbBeiChangP);
-            setupParameter(cbBeiXinP);
-            setupParameter(cbLingKouP);
-
-            setupParameter(cbKuYaoP);
-            setupParameter(cbKuXiaWeiP);
-            setupParameter(cbKuChangP);
-            setupParameter(cbZhongChangP);
-            setupParameter(cbShangDangP);
-            setupParameter(cbKaiDangP);
-            setupParameter(cbZhongDangP);
-            setupParameter(cbKuKouP);
-            setupParameter(cbKouZiP);
-            setupParameter(cbLaLianP);
-            setupParameter(cbYaoDaiP);
-
             init = true;
-            this.rvReport.RefreshReport();
         }
 
 
@@ -197,11 +166,19 @@ namespace gxxf {
         // Login
         private void btnLogin_Click(object sender, EventArgs e) {
             if (!tbPassword.Text.Equals(superuserpass)) {
-                DataRow[] rows = gxxfDataSet.AppUser.Select("UserName = '" + tbUsername.Text + "' AND Password = '" + tbPassword.Text + "'");
-                if (rows.Length == 0) {
+                SqlCommand cmd = new SqlCommand("SELECT count(*) FROM AppUser WHERE UserName = '" + tbUsername.Text + "' AND Password = '" + tbPassword.Text + "'");
+                cmd.Connection = (SqlConnection)tableAdapterManager.Connection;
+                tableAdapterManager.Connection.Open();
+                int c = (int)cmd.ExecuteScalar();
+
+                if (c < 1) {
                     MessageBox.Show("登入失敗!! 帳號或密碼錯誤");
+                    return;
                 }
             }
+
+            lbLoginPrompt.Text = "登入中，請稍候...";
+            lbLoginPrompt.Update();
 
             Cursor.Current = Cursors.WaitCursor;
             this.customerBindingSource.Filter = "1 <> 1";
@@ -212,7 +189,35 @@ namespace gxxf {
             this.ticketTrousersTableAdapter.Fill(this.gxxfDataSet.TicketTrousers);
             this.ticketJacketBindingSource.Filter = "1 <> 1";
             this.ticketJacketTableAdapter.Fill(this.gxxfDataSet.TicketJacket);
+            this.parameterTableAdapter.Fill(this.gxxfDataSet.Parameter);
             Cursor.Current = Cursors.Default;
+
+            dgvCustomerTicket.BindingContext = new BindingContext();
+            dgvQueryTicket.BindingContext = new BindingContext();
+
+            setupParameter(cbJianKuanP);
+            setupParameter(cbShangWeiP);
+            setupParameter(cbXiaWeiP);
+            setupParameter(cbXiuChangP);
+            setupParameter(cbXiuKouP);
+            setupParameter(cbQianXiongP);
+            setupParameter(cbHouBeiP);
+            setupParameter(cbShenChangP);
+            setupParameter(cbBeiChangP);
+            setupParameter(cbBeiXinP);
+            setupParameter(cbLingKouP);
+
+            setupParameter(cbKuYaoP);
+            setupParameter(cbKuXiaWeiP);
+            setupParameter(cbKuChangP);
+            setupParameter(cbZhongChangP);
+            setupParameter(cbShangDangP);
+            setupParameter(cbKaiDangP);
+            setupParameter(cbZhongDangP);
+            setupParameter(cbKuKouP);
+            setupParameter(cbKouZiP);
+            setupParameter(cbLaLianP);
+            setupParameter(cbYaoDaiP);
 
             username = tbUsername.Text;
             password = tbPassword.Text;
@@ -1251,13 +1256,13 @@ namespace gxxf {
             panelLogin.Visible = false;
             panelPrint.Visible = true;
             rvReport.LocalReport.ReportEmbeddedResource = "gxxf.TicketReport.rdlc";
+            rvReport.ZoomMode = Microsoft.Reporting.WinForms.ZoomMode.PageWidth;
+            rvReport.SetDisplayMode(Microsoft.Reporting.WinForms.DisplayMode.PrintLayout);
+            rvReport.PageCountMode = Microsoft.Reporting.WinForms.PageCountMode.Actual;
             rvReport.ShowBackButton = false;
             rvReport.ShowFindControls = false;
             rvReport.ShowRefreshButton = false;
             rvReport.ShowStopButton = false;
-            rvReport.ZoomMode = Microsoft.Reporting.WinForms.ZoomMode.PageWidth;
-            rvReport.PageCountMode = Microsoft.Reporting.WinForms.PageCountMode.Actual;
-            rvReport.SetDisplayMode(Microsoft.Reporting.WinForms.DisplayMode.PrintLayout);
             rvReport.Refresh();
             rvReport.RefreshReport();
         }
@@ -1268,13 +1273,13 @@ namespace gxxf {
             panelLogin.Visible = false;
             panelPrint.Visible = true;
             rvReport.LocalReport.ReportEmbeddedResource = "gxxf.ReportReport.rdlc";
+            rvReport.ZoomMode = Microsoft.Reporting.WinForms.ZoomMode.PageWidth;
+            rvReport.SetDisplayMode(Microsoft.Reporting.WinForms.DisplayMode.PrintLayout);
+            rvReport.PageCountMode = Microsoft.Reporting.WinForms.PageCountMode.Actual;
             rvReport.ShowBackButton = false;
             rvReport.ShowFindControls = false;
             rvReport.ShowRefreshButton = false;
             rvReport.ShowStopButton = false;
-            rvReport.ZoomMode = Microsoft.Reporting.WinForms.ZoomMode.PageWidth;
-            rvReport.PageCountMode = Microsoft.Reporting.WinForms.PageCountMode.Actual;
-            rvReport.SetDisplayMode(Microsoft.Reporting.WinForms.DisplayMode.PrintLayout);
             rvReport.Refresh();
             rvReport.RefreshReport();
         }
