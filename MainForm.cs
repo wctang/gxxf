@@ -11,7 +11,7 @@ using System.Data.SqlClient;
 namespace gxxf {
     public partial class MainForm : Form {
         private bool init = false;
-        private int mode = 0;
+        private int tab = 0;
         private String username = null;
         private String password = "123123";
         private String superuserpass = "gxxf123123";
@@ -59,6 +59,7 @@ namespace gxxf {
             setupParameter(cbYaoDaiP);
 
             init = true;
+            this.rvReport.RefreshReport();
         }
 
 
@@ -162,19 +163,6 @@ namespace gxxf {
             }
             mtb.Enabled = (dr != null);
         }
-        private bool DrSet(DataRow dr, DataColumn c, DateTimePicker dtp, CheckBox ck) {
-            if (dr == null)
-                return false;
-
-            String val;
-            if (ck.Checked) {
-                DateTime d = dtp.Value;
-                val = DateToStr(dtp.Value);
-            } else {
-                val = "";
-            }
-            return DrSet(dr, c, val);
-        }
         private void mtbDate_Validated(object sender, EventArgs e) {
             MaskedTextBox tb = (MaskedTextBox)sender;
             if (ValidateDate(tb.Text) == null) {
@@ -243,14 +231,17 @@ namespace gxxf {
         // tab switch
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e) {
             if (tabMain.SelectedIndex == 0) {
-                mode = 0;
+                tab = 0;
                 customerQueryInit();
             } else if (tabMain.SelectedIndex == 1) {
-                mode = 1;
+                tab = 1;
                 ticketQueryInit();
             } else if (tabMain.SelectedIndex == 2) {
-                mode = 2;
+                tab = 2;
                 reportQueryInit();
+            } else if (tabMain.SelectedIndex == 3) {
+                tab = 3;
+                setupInit();
             }
         }
 
@@ -414,7 +405,7 @@ namespace gxxf {
             ticketQueryRefresh();
         }
         private void dgvCustomerTicket_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
-            if (mode == 2)
+            if (tab == 2)
                 return;
 
             btnEdit_Click(sender, null);
@@ -535,6 +526,53 @@ namespace gxxf {
             reportBindingSource.Add(r);
 
             Cursor.Current = Cursors.Default;
+        }
+
+
+        // Setup
+        private void setupInit() {
+            
+        }
+        private void parameterBindingSource_CurrentChanged(object sender, EventArgs e) {
+            DataRowView drv = (DataRowView)parameterBindingSource.Current;
+            DataRow dr = (drv == null) ? null : drv.Row;
+            DrGet(dr, this.gxxfDataSet.Parameter.ParameterNameColumn, tbParameter);
+        }
+        private void btnParameterNew_Click(object sender, EventArgs e) {
+            String str = tbParameter.Text.Trim();
+            if (str.Length == 0)
+                return;
+
+            DataRow dr = gxxfDataSet.Parameter.AddParameterRow("", "", str);
+            if (this.parameterTableAdapter.Update(dr) != 1) {
+                // TODO
+            }
+            if (dgvParameter.Rows.Count > 0)
+                dgvParameter.CurrentCell = dgvParameter.Rows[dgvParameter.Rows.Count-1].Cells[0];
+        }
+        private void btnParameterUpdate_Click(object sender, EventArgs e) {
+            DataRowView drv = (DataRowView)parameterBindingSource.Current;
+            if (drv == null)
+                return;
+            DataRow dr = drv.Row;
+
+            DrSet(dr, this.gxxfDataSet.Parameter.ParameterNameColumn, tbParameter.Text);
+            if (this.parameterTableAdapter.Update(dr) != 1) {
+                // TODO
+            }
+        }
+        private void btnParameterDelete_Click(object sender, EventArgs e) {
+            DataRowView drv = (DataRowView)parameterBindingSource.Current;
+            if (drv == null)
+                return;
+            DataRow dr = drv.Row;
+
+            if (MessageBox.Show("確定要刪除 " + DrGetStr(dr, gxxfDataSet.Parameter.ParameterNameColumn) + " ?", "刪除參數", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
+            dr.Delete();
+            if (this.parameterTableAdapter.Update(dr) != 1) {
+                // TODO
+            }
         }
 
 
@@ -662,7 +700,7 @@ namespace gxxf {
         }
         private void customerBindingSource_CurrentChanged(object sender, EventArgs e) {
             String cid = showCurrentCustomer();
-            if (mode == 0) {
+            if (tab == 0) {
                 if (cid == null) {
                     changeTicketFilter(null, null);
                 } else {
@@ -683,7 +721,7 @@ namespace gxxf {
                 this.ticketTrousersBindingSource.Filter = "TicketId = " + tid;
             }
 
-            if (mode == 1 || mode == 2) {
+            if (tab == 1 || tab == 2) {
                 if (dr == null) {
                     this.customerBindingSource.Filter = "1 <> 1";
                 } else {
@@ -1205,6 +1243,47 @@ namespace gxxf {
                 updateTransaction.Complete();
             }
             MessageBox.Show("刪除成功");
+        }
+
+        private void btnTicketPrint_Click(object sender, EventArgs e) {
+            panelMain.Visible = false;
+            panelEdit.Visible = false;
+            panelLogin.Visible = false;
+            panelPrint.Visible = true;
+            rvReport.LocalReport.ReportEmbeddedResource = "gxxf.TicketReport.rdlc";
+            rvReport.ShowBackButton = false;
+            rvReport.ShowFindControls = false;
+            rvReport.ShowRefreshButton = false;
+            rvReport.ShowStopButton = false;
+            rvReport.ZoomMode = Microsoft.Reporting.WinForms.ZoomMode.PageWidth;
+            rvReport.PageCountMode = Microsoft.Reporting.WinForms.PageCountMode.Actual;
+            rvReport.SetDisplayMode(Microsoft.Reporting.WinForms.DisplayMode.PrintLayout);
+            rvReport.Refresh();
+            rvReport.RefreshReport();
+        }
+
+        private void btnReportPrint_Click(object sender, EventArgs e) {
+            panelMain.Visible = false;
+            panelEdit.Visible = false;
+            panelLogin.Visible = false;
+            panelPrint.Visible = true;
+            rvReport.LocalReport.ReportEmbeddedResource = "gxxf.ReportReport.rdlc";
+            rvReport.ShowBackButton = false;
+            rvReport.ShowFindControls = false;
+            rvReport.ShowRefreshButton = false;
+            rvReport.ShowStopButton = false;
+            rvReport.ZoomMode = Microsoft.Reporting.WinForms.ZoomMode.PageWidth;
+            rvReport.PageCountMode = Microsoft.Reporting.WinForms.PageCountMode.Actual;
+            rvReport.SetDisplayMode(Microsoft.Reporting.WinForms.DisplayMode.PrintLayout);
+            rvReport.Refresh();
+            rvReport.RefreshReport();
+        }
+
+        private void btnBack_Click(object sender, EventArgs e) {
+            panelMain.Visible = true;
+            panelEdit.Visible = false;
+            panelLogin.Visible = false;
+            panelPrint.Visible = false;
         }
     }
 }

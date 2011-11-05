@@ -29,6 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource10 = new Microsoft.Reporting.WinForms.ReportDataSource();
+            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource11 = new Microsoft.Reporting.WinForms.ReportDataSource();
+            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource12 = new Microsoft.Reporting.WinForms.ReportDataSource();
+            this.ticketBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.gxxfDataSet = new gxxf.gxxfDataSet();
+            this.ticketJacketBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.ticketTrousersBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.lbCustomers = new System.Windows.Forms.ListBox();
@@ -42,8 +49,6 @@
             this.Earnest = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ticketBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.gxxfDataSet = new gxxf.gxxfDataSet();
             this.customerDataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -53,6 +58,7 @@
             this.customerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tbQueryCustomer = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnReportPrint = new System.Windows.Forms.Button();
             this.dgvQueryTicket = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -99,13 +105,18 @@
             this.Payoff = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.reportBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btnUpdateReport = new System.Windows.Forms.Button();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnParameterDelete = new System.Windows.Forms.Button();
+            this.btnParameterUpdate = new System.Windows.Forms.Button();
+            this.btnParameterNew = new System.Windows.Forms.Button();
+            this.dgvParameter = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn32 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.parameterBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.tbParameter = new System.Windows.Forms.TextBox();
             this.customerTableAdapter = new gxxf.gxxfDataSetTableAdapters.CustomerTableAdapter();
             this.tableAdapterManager = new gxxf.gxxfDataSetTableAdapters.TableAdapterManager();
             this.ticketTableAdapter = new gxxf.gxxfDataSetTableAdapters.TicketTableAdapter();
-            this.ticketJacketBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ticketJacketTableAdapter = new gxxf.gxxfDataSetTableAdapters.TicketJacketTableAdapter();
-            this.ticketTrousersBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.ticketTrousersTableAdapter = new gxxf.gxxfDataSetTableAdapters.TicketTrousersTableAdapter();
             this.parameterTableAdapter = new gxxf.gxxfDataSetTableAdapters.ParameterTableAdapter();
             this.panelLogin = new System.Windows.Forms.Panel();
@@ -330,7 +341,10 @@
             this.tbEarnest = new System.Windows.Forms.TextBox();
             this.tbAccountReceived = new System.Windows.Forms.TextBox();
             this.panelMain = new System.Windows.Forms.Panel();
+            this.btnTicketPrint = new System.Windows.Forms.Button();
+            this.btnCustomerDelete = new System.Windows.Forms.Button();
             this.btnCustomerNew = new System.Windows.Forms.Button();
+            this.btnTicketDelete = new System.Windows.Forms.Button();
             this.btnTicketNew = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
@@ -354,13 +368,16 @@
             this.showCompanyAddress = new System.Windows.Forms.TextBox();
             this.showCompanyName = new System.Windows.Forms.TextBox();
             this.showCustomerName = new System.Windows.Forms.TextBox();
-            this.btnTicketDelete = new System.Windows.Forms.Button();
-            this.btnCustomerDelete = new System.Windows.Forms.Button();
+            this.rvReport = new Microsoft.Reporting.WinForms.ReportViewer();
+            this.panelPrint = new System.Windows.Forms.Panel();
+            this.btnBack = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.ticketBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gxxfDataSet)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ticketJacketBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ticketTrousersBindingSource)).BeginInit();
             this.tabMain.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCustomerTicket)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ticketBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gxxfDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customerDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customerBindingSource)).BeginInit();
             this.tabPage2.SuspendLayout();
@@ -369,9 +386,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueryReport)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvReport)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.reportBindingSource)).BeginInit();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvParameter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.parameterBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ticketJacketBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ticketTrousersBindingSource)).BeginInit();
             this.panelLogin.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -382,13 +399,38 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
+            this.panelPrint.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // ticketBindingSource
+            // 
+            this.ticketBindingSource.DataMember = "Ticket";
+            this.ticketBindingSource.DataSource = this.gxxfDataSet;
+            this.ticketBindingSource.CurrentChanged += new System.EventHandler(this.ticketBindingSource_CurrentChanged);
+            // 
+            // gxxfDataSet
+            // 
+            this.gxxfDataSet.DataSetName = "gxxfDataSet";
+            this.gxxfDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // ticketJacketBindingSource
+            // 
+            this.ticketJacketBindingSource.DataMember = "TicketJacket";
+            this.ticketJacketBindingSource.DataSource = this.gxxfDataSet;
+            this.ticketJacketBindingSource.CurrentChanged += new System.EventHandler(this.ticketJacketBindingSource_CurrentChanged);
+            // 
+            // ticketTrousersBindingSource
+            // 
+            this.ticketTrousersBindingSource.DataMember = "TicketTrousers";
+            this.ticketTrousersBindingSource.DataSource = this.gxxfDataSet;
+            this.ticketTrousersBindingSource.CurrentChanged += new System.EventHandler(this.ticketTrousersbindingSource_CurrentChanged);
             // 
             // tabMain
             // 
             this.tabMain.Controls.Add(this.tabPage1);
             this.tabMain.Controls.Add(this.tabPage2);
             this.tabMain.Controls.Add(this.tabPage5);
+            this.tabMain.Controls.Add(this.tabPage3);
             this.tabMain.Location = new System.Drawing.Point(6, 5);
             this.tabMain.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.tabMain.Name = "tabMain";
@@ -531,17 +573,6 @@
             this.dataGridViewTextBoxColumn15.ReadOnly = true;
             this.dataGridViewTextBoxColumn15.Width = 30;
             // 
-            // ticketBindingSource
-            // 
-            this.ticketBindingSource.DataMember = "Ticket";
-            this.ticketBindingSource.DataSource = this.gxxfDataSet;
-            this.ticketBindingSource.CurrentChanged += new System.EventHandler(this.ticketBindingSource_CurrentChanged);
-            // 
-            // gxxfDataSet
-            // 
-            this.gxxfDataSet.DataSetName = "gxxfDataSet";
-            this.gxxfDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
             // customerDataGridView
             // 
             this.customerDataGridView.AllowUserToAddRows = false;
@@ -625,6 +656,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnReportPrint);
             this.tabPage2.Controls.Add(this.dgvQueryTicket);
             this.tabPage2.Controls.Add(this.queryCompanyName);
             this.tabPage2.Controls.Add(this.queryIfPayoff2);
@@ -649,6 +681,17 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "訂單查詢";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btnReportPrint
+            // 
+            this.btnReportPrint.AutoSize = true;
+            this.btnReportPrint.Location = new System.Drawing.Point(479, 177);
+            this.btnReportPrint.Name = "btnReportPrint";
+            this.btnReportPrint.Size = new System.Drawing.Size(93, 34);
+            this.btnReportPrint.TabIndex = 12;
+            this.btnReportPrint.Text = "列印";
+            this.btnReportPrint.UseVisualStyleBackColor = true;
+            this.btnReportPrint.Click += new System.EventHandler(this.btnReportPrint_Click);
             // 
             // dgvQueryTicket
             // 
@@ -1122,6 +1165,95 @@
             this.btnUpdateReport.UseVisualStyleBackColor = true;
             this.btnUpdateReport.Click += new System.EventHandler(this.btnUpdateReport_Click);
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.btnParameterDelete);
+            this.tabPage3.Controls.Add(this.btnParameterUpdate);
+            this.tabPage3.Controls.Add(this.btnParameterNew);
+            this.tabPage3.Controls.Add(this.dgvParameter);
+            this.tabPage3.Controls.Add(this.tbParameter);
+            this.tabPage3.Location = new System.Drawing.Point(4, 33);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(581, 949);
+            this.tabPage3.TabIndex = 3;
+            this.tabPage3.Text = "設定";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // btnParameterDelete
+            // 
+            this.btnParameterDelete.AutoSize = true;
+            this.btnParameterDelete.Location = new System.Drawing.Point(482, 56);
+            this.btnParameterDelete.Name = "btnParameterDelete";
+            this.btnParameterDelete.Size = new System.Drawing.Size(93, 34);
+            this.btnParameterDelete.TabIndex = 2;
+            this.btnParameterDelete.Text = "刪除";
+            this.btnParameterDelete.UseVisualStyleBackColor = true;
+            this.btnParameterDelete.Click += new System.EventHandler(this.btnParameterDelete_Click);
+            // 
+            // btnParameterUpdate
+            // 
+            this.btnParameterUpdate.AutoSize = true;
+            this.btnParameterUpdate.Location = new System.Drawing.Point(383, 56);
+            this.btnParameterUpdate.Name = "btnParameterUpdate";
+            this.btnParameterUpdate.Size = new System.Drawing.Size(93, 34);
+            this.btnParameterUpdate.TabIndex = 2;
+            this.btnParameterUpdate.Text = "修改";
+            this.btnParameterUpdate.UseVisualStyleBackColor = true;
+            this.btnParameterUpdate.Click += new System.EventHandler(this.btnParameterUpdate_Click);
+            // 
+            // btnParameterNew
+            // 
+            this.btnParameterNew.AutoSize = true;
+            this.btnParameterNew.Location = new System.Drawing.Point(284, 56);
+            this.btnParameterNew.Name = "btnParameterNew";
+            this.btnParameterNew.Size = new System.Drawing.Size(93, 34);
+            this.btnParameterNew.TabIndex = 2;
+            this.btnParameterNew.Text = "新增";
+            this.btnParameterNew.UseVisualStyleBackColor = true;
+            this.btnParameterNew.Click += new System.EventHandler(this.btnParameterNew_Click);
+            // 
+            // dgvParameter
+            // 
+            this.dgvParameter.AllowUserToAddRows = false;
+            this.dgvParameter.AllowUserToDeleteRows = false;
+            this.dgvParameter.AllowUserToResizeRows = false;
+            this.dgvParameter.AutoGenerateColumns = false;
+            this.dgvParameter.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvParameter.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn32});
+            this.dgvParameter.DataSource = this.parameterBindingSource;
+            this.dgvParameter.Location = new System.Drawing.Point(6, 6);
+            this.dgvParameter.MultiSelect = false;
+            this.dgvParameter.Name = "dgvParameter";
+            this.dgvParameter.ReadOnly = true;
+            this.dgvParameter.RowHeadersVisible = false;
+            this.dgvParameter.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvParameter.ShowCellToolTips = false;
+            this.dgvParameter.Size = new System.Drawing.Size(272, 334);
+            this.dgvParameter.TabIndex = 1;
+            // 
+            // dataGridViewTextBoxColumn32
+            // 
+            this.dataGridViewTextBoxColumn32.DataPropertyName = "ParameterName";
+            this.dataGridViewTextBoxColumn32.HeaderText = "參數";
+            this.dataGridViewTextBoxColumn32.Name = "dataGridViewTextBoxColumn32";
+            this.dataGridViewTextBoxColumn32.ReadOnly = true;
+            this.dataGridViewTextBoxColumn32.Width = 240;
+            // 
+            // parameterBindingSource
+            // 
+            this.parameterBindingSource.DataMember = "Parameter";
+            this.parameterBindingSource.DataSource = this.gxxfDataSet;
+            this.parameterBindingSource.CurrentChanged += new System.EventHandler(this.parameterBindingSource_CurrentChanged);
+            // 
+            // tbParameter
+            // 
+            this.tbParameter.Location = new System.Drawing.Point(284, 15);
+            this.tbParameter.Name = "tbParameter";
+            this.tbParameter.Size = new System.Drawing.Size(291, 32);
+            this.tbParameter.TabIndex = 1;
+            // 
             // customerTableAdapter
             // 
             this.customerTableAdapter.ClearBeforeFill = true;
@@ -1141,21 +1273,9 @@
             // 
             this.ticketTableAdapter.ClearBeforeFill = true;
             // 
-            // ticketJacketBindingSource
-            // 
-            this.ticketJacketBindingSource.DataMember = "TicketJacket";
-            this.ticketJacketBindingSource.DataSource = this.gxxfDataSet;
-            this.ticketJacketBindingSource.CurrentChanged += new System.EventHandler(this.ticketJacketBindingSource_CurrentChanged);
-            // 
             // ticketJacketTableAdapter
             // 
             this.ticketJacketTableAdapter.ClearBeforeFill = true;
-            // 
-            // ticketTrousersBindingSource
-            // 
-            this.ticketTrousersBindingSource.DataMember = "TicketTrousers";
-            this.ticketTrousersBindingSource.DataSource = this.gxxfDataSet;
-            this.ticketTrousersBindingSource.CurrentChanged += new System.EventHandler(this.ticketTrousersbindingSource_CurrentChanged);
             // 
             // ticketTrousersTableAdapter
             // 
@@ -3891,6 +4011,7 @@
             // 
             // panelMain
             // 
+            this.panelMain.Controls.Add(this.btnTicketPrint);
             this.panelMain.Controls.Add(this.btnCustomerDelete);
             this.panelMain.Controls.Add(this.btnCustomerNew);
             this.panelMain.Controls.Add(this.btnTicketDelete);
@@ -3902,9 +4023,31 @@
             this.panelMain.Controls.Add(this.tableLayoutPanel2);
             this.panelMain.Location = new System.Drawing.Point(0, 0);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(1275, 1000);
+            this.panelMain.Size = new System.Drawing.Size(1276, 1000);
             this.panelMain.TabIndex = 134;
             this.panelMain.Visible = false;
+            // 
+            // btnTicketPrint
+            // 
+            this.btnTicketPrint.AutoSize = true;
+            this.btnTicketPrint.Location = new System.Drawing.Point(1183, 876);
+            this.btnTicketPrint.Name = "btnTicketPrint";
+            this.btnTicketPrint.Size = new System.Drawing.Size(93, 34);
+            this.btnTicketPrint.TabIndex = 133;
+            this.btnTicketPrint.Text = "列印";
+            this.btnTicketPrint.UseVisualStyleBackColor = true;
+            this.btnTicketPrint.Click += new System.EventHandler(this.btnTicketPrint_Click);
+            // 
+            // btnCustomerDelete
+            // 
+            this.btnCustomerDelete.AutoSize = true;
+            this.btnCustomerDelete.Location = new System.Drawing.Point(1149, 12);
+            this.btnCustomerDelete.Name = "btnCustomerDelete";
+            this.btnCustomerDelete.Size = new System.Drawing.Size(125, 34);
+            this.btnCustomerDelete.TabIndex = 1;
+            this.btnCustomerDelete.Text = "刪除顧客";
+            this.btnCustomerDelete.UseVisualStyleBackColor = true;
+            this.btnCustomerDelete.Click += new System.EventHandler(this.btnCustomerDelete_Click);
             // 
             // btnCustomerNew
             // 
@@ -3916,6 +4059,17 @@
             this.btnCustomerNew.Text = "新增顧客";
             this.btnCustomerNew.UseVisualStyleBackColor = true;
             this.btnCustomerNew.Click += new System.EventHandler(this.btnCustomerNew_Click);
+            // 
+            // btnTicketDelete
+            // 
+            this.btnTicketDelete.AutoSize = true;
+            this.btnTicketDelete.Location = new System.Drawing.Point(1016, 12);
+            this.btnTicketDelete.Name = "btnTicketDelete";
+            this.btnTicketDelete.Size = new System.Drawing.Size(125, 34);
+            this.btnTicketDelete.TabIndex = 1;
+            this.btnTicketDelete.Text = "刪除訂單";
+            this.btnTicketDelete.UseVisualStyleBackColor = true;
+            this.btnTicketDelete.Click += new System.EventHandler(this.btnTicketDelete_Click);
             // 
             // btnTicketNew
             // 
@@ -4212,27 +4366,43 @@
             this.showCustomerName.TabIndex = 32;
             this.showCustomerName.TabStop = false;
             // 
-            // btnTicketDelete
+            // rvReport
             // 
-            this.btnTicketDelete.AutoSize = true;
-            this.btnTicketDelete.Location = new System.Drawing.Point(1016, 12);
-            this.btnTicketDelete.Name = "btnTicketDelete";
-            this.btnTicketDelete.Size = new System.Drawing.Size(125, 34);
-            this.btnTicketDelete.TabIndex = 1;
-            this.btnTicketDelete.Text = "刪除訂單";
-            this.btnTicketDelete.UseVisualStyleBackColor = true;
-            this.btnTicketDelete.Click += new System.EventHandler(this.btnTicketDelete_Click);
+            reportDataSource10.Name = "Ticket";
+            reportDataSource10.Value = this.ticketBindingSource;
+            reportDataSource11.Name = "TicketJacket";
+            reportDataSource11.Value = this.ticketJacketBindingSource;
+            reportDataSource12.Name = "TicketTrousers";
+            reportDataSource12.Value = this.ticketTrousersBindingSource;
+            this.rvReport.LocalReport.DataSources.Add(reportDataSource10);
+            this.rvReport.LocalReport.DataSources.Add(reportDataSource11);
+            this.rvReport.LocalReport.DataSources.Add(reportDataSource12);
+            this.rvReport.LocalReport.ReportEmbeddedResource = "gxxf.TicketReport.rdlc";
+            this.rvReport.Location = new System.Drawing.Point(6, 61);
+            this.rvReport.Name = "rvReport";
+            this.rvReport.Size = new System.Drawing.Size(1266, 936);
+            this.rvReport.TabIndex = 135;
             // 
-            // btnCustomerDelete
+            // panelPrint
             // 
-            this.btnCustomerDelete.AutoSize = true;
-            this.btnCustomerDelete.Location = new System.Drawing.Point(1149, 12);
-            this.btnCustomerDelete.Name = "btnCustomerDelete";
-            this.btnCustomerDelete.Size = new System.Drawing.Size(125, 34);
-            this.btnCustomerDelete.TabIndex = 1;
-            this.btnCustomerDelete.Text = "刪除顧客";
-            this.btnCustomerDelete.UseVisualStyleBackColor = true;
-            this.btnCustomerDelete.Click += new System.EventHandler(this.btnCustomerDelete_Click);
+            this.panelPrint.Controls.Add(this.btnBack);
+            this.panelPrint.Controls.Add(this.rvReport);
+            this.panelPrint.Location = new System.Drawing.Point(0, 0);
+            this.panelPrint.Name = "panelPrint";
+            this.panelPrint.Size = new System.Drawing.Size(1275, 1000);
+            this.panelPrint.TabIndex = 136;
+            this.panelPrint.Visible = false;
+            // 
+            // btnBack
+            // 
+            this.btnBack.AutoSize = true;
+            this.btnBack.Location = new System.Drawing.Point(12, 12);
+            this.btnBack.Name = "btnBack";
+            this.btnBack.Size = new System.Drawing.Size(93, 34);
+            this.btnBack.TabIndex = 136;
+            this.btnBack.Text = "返回";
+            this.btnBack.UseVisualStyleBackColor = true;
+            this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
             // MainForm
             // 
@@ -4243,6 +4413,7 @@
             this.ClientSize = new System.Drawing.Size(1284, 1009);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelEdit);
+            this.Controls.Add(this.panelPrint);
             this.Controls.Add(this.panelLogin);
             this.Font = new System.Drawing.Font("Microsoft JhengHei", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
@@ -4250,12 +4421,14 @@
             this.Text = "國信西服";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.ticketBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gxxfDataSet)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ticketJacketBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ticketTrousersBindingSource)).EndInit();
             this.tabMain.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCustomerTicket)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ticketBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gxxfDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.customerDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.customerBindingSource)).EndInit();
             this.tabPage2.ResumeLayout(false);
@@ -4265,9 +4438,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueryReport)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvReport)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.reportBindingSource)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvParameter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.parameterBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ticketJacketBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ticketTrousersBindingSource)).EndInit();
             this.panelLogin.ResumeLayout(false);
             this.panelLogin.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -4288,6 +4462,8 @@
             this.panelMain.PerformLayout();
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
+            this.panelPrint.ResumeLayout(false);
+            this.panelPrint.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -4310,7 +4486,6 @@
         private gxxfDataSetTableAdapters.TicketJacketTableAdapter ticketJacketTableAdapter;
         private System.Windows.Forms.BindingSource ticketTrousersBindingSource;
         private gxxfDataSetTableAdapters.TicketTrousersTableAdapter ticketTrousersTableAdapter;
-        private System.Windows.Forms.BindingSource parameterBindingSource;
         private gxxfDataSetTableAdapters.ParameterTableAdapter parameterTableAdapter;
         private System.Windows.Forms.Label label43;
         private System.Windows.Forms.TabPage tabPage5;
@@ -4621,6 +4796,19 @@
         private System.Windows.Forms.TextBox showRemark;
         private System.Windows.Forms.Button btnCustomerDelete;
         private System.Windows.Forms.Button btnTicketDelete;
+        private Microsoft.Reporting.WinForms.ReportViewer rvReport;
+        private System.Windows.Forms.Panel panelPrint;
+        private System.Windows.Forms.Button btnTicketPrint;
+        private System.Windows.Forms.Button btnReportPrint;
+        private System.Windows.Forms.Button btnBack;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TextBox tbParameter;
+        private System.Windows.Forms.DataGridView dgvParameter;
+        private System.Windows.Forms.BindingSource parameterBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn32;
+        private System.Windows.Forms.Button btnParameterNew;
+        private System.Windows.Forms.Button btnParameterDelete;
+        private System.Windows.Forms.Button btnParameterUpdate;
     }
 }
 
