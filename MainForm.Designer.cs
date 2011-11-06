@@ -58,6 +58,7 @@
             this.customerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tbQueryCustomer = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tbQueryTicketCode = new System.Windows.Forms.TextBox();
             this.btnReportPrint = new System.Windows.Forms.Button();
             this.dgvQueryTicket = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -76,6 +77,7 @@
             this.queryIfCarry1 = new System.Windows.Forms.CheckBox();
             this.label92 = new System.Windows.Forms.Label();
             this.label91 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.label93 = new System.Windows.Forms.Label();
             this.label90 = new System.Windows.Forms.Label();
             this.queryOrderDate2 = new System.Windows.Forms.MaskedTextBox();
@@ -85,6 +87,7 @@
             this.queryPlanDate1 = new System.Windows.Forms.MaskedTextBox();
             this.queryOrderDate1 = new System.Windows.Forms.MaskedTextBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.btnPrintMonthlyReport = new System.Windows.Forms.Button();
             this.dgvQueryReport = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn20 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn21 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -653,10 +656,14 @@
             this.tbQueryCustomer.Name = "tbQueryCustomer";
             this.tbQueryCustomer.Size = new System.Drawing.Size(411, 25);
             this.tbQueryCustomer.TabIndex = 0;
+            this.tbQueryCustomer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbQueryCustomer.TextChanged += new System.EventHandler(this.tbQueryCustomer_TextChanged);
+            this.tbQueryCustomer.Enter += new System.EventHandler(this.edit_Enter);
+            this.tbQueryCustomer.Leave += new System.EventHandler(this.edit_Leave);
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.tbQueryTicketCode);
             this.tabPage2.Controls.Add(this.btnReportPrint);
             this.tabPage2.Controls.Add(this.dgvQueryTicket);
             this.tabPage2.Controls.Add(this.queryCompanyName);
@@ -666,6 +673,7 @@
             this.tabPage2.Controls.Add(this.queryIfCarry1);
             this.tabPage2.Controls.Add(this.label92);
             this.tabPage2.Controls.Add(this.label91);
+            this.tabPage2.Controls.Add(this.label10);
             this.tabPage2.Controls.Add(this.label93);
             this.tabPage2.Controls.Add(this.label90);
             this.tabPage2.Controls.Add(this.queryOrderDate2);
@@ -683,10 +691,24 @@
             this.tabPage2.Text = "訂單查詢";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // tbQueryTicketCode
+            // 
+            this.tbQueryTicketCode.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbQueryTicketCode.Location = new System.Drawing.Point(104, 8);
+            this.tbQueryTicketCode.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.tbQueryTicketCode.Name = "tbQueryTicketCode";
+            this.tbQueryTicketCode.Size = new System.Drawing.Size(242, 25);
+            this.tbQueryTicketCode.TabIndex = 13;
+            this.tbQueryTicketCode.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
+            this.tbQueryTicketCode.TextChanged += new System.EventHandler(this.tbQueryTicketCode_TextChanged);
+            this.tbQueryTicketCode.Enter += new System.EventHandler(this.edit_Enter);
+            this.tbQueryTicketCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.edit_number_KeyPress);
+            this.tbQueryTicketCode.Leave += new System.EventHandler(this.edit_Leave);
+            // 
             // btnReportPrint
             // 
             this.btnReportPrint.AutoSize = true;
-            this.btnReportPrint.Location = new System.Drawing.Point(479, 177);
+            this.btnReportPrint.Location = new System.Drawing.Point(481, 209);
             this.btnReportPrint.Name = "btnReportPrint";
             this.btnReportPrint.Size = new System.Drawing.Size(93, 34);
             this.btnReportPrint.TabIndex = 12;
@@ -712,7 +734,7 @@
             this.dataGridViewTextBoxColumn18,
             this.dataGridViewTextBoxColumn19});
             this.dgvQueryTicket.DataSource = this.ticketBindingSource;
-            this.dgvQueryTicket.Location = new System.Drawing.Point(0, 219);
+            this.dgvQueryTicket.Location = new System.Drawing.Point(0, 248);
             this.dgvQueryTicket.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.dgvQueryTicket.MultiSelect = false;
             this.dgvQueryTicket.Name = "dgvQueryTicket";
@@ -720,7 +742,7 @@
             this.dgvQueryTicket.RowHeadersVisible = false;
             this.dgvQueryTicket.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvQueryTicket.ShowCellToolTips = false;
-            this.dgvQueryTicket.Size = new System.Drawing.Size(578, 730);
+            this.dgvQueryTicket.Size = new System.Drawing.Size(578, 701);
             this.dgvQueryTicket.TabIndex = 11;
             // 
             // dataGridViewTextBoxColumn1
@@ -798,7 +820,7 @@
             // 
             this.queryCompanyName.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.queryCompanyName.FormattingEnabled = true;
-            this.queryCompanyName.Location = new System.Drawing.Point(102, 9);
+            this.queryCompanyName.Location = new System.Drawing.Point(104, 41);
             this.queryCompanyName.Name = "queryCompanyName";
             this.queryCompanyName.Size = new System.Drawing.Size(242, 32);
             this.queryCompanyName.TabIndex = 0;
@@ -808,7 +830,7 @@
             // 
             // queryIfPayoff2
             // 
-            this.queryIfPayoff2.Location = new System.Drawing.Point(236, 176);
+            this.queryIfPayoff2.Location = new System.Drawing.Point(238, 208);
             this.queryIfPayoff2.Name = "queryIfPayoff2";
             this.queryIfPayoff2.Size = new System.Drawing.Size(108, 25);
             this.queryIfPayoff2.TabIndex = 10;
@@ -818,7 +840,7 @@
             // 
             // queryIfCarry2
             // 
-            this.queryIfCarry2.Location = new System.Drawing.Point(236, 150);
+            this.queryIfCarry2.Location = new System.Drawing.Point(238, 182);
             this.queryIfCarry2.Name = "queryIfCarry2";
             this.queryIfCarry2.Size = new System.Drawing.Size(108, 25);
             this.queryIfCarry2.TabIndex = 8;
@@ -828,7 +850,7 @@
             // 
             // queryIfPayoff1
             // 
-            this.queryIfPayoff1.Location = new System.Drawing.Point(102, 176);
+            this.queryIfPayoff1.Location = new System.Drawing.Point(104, 208);
             this.queryIfPayoff1.Name = "queryIfPayoff1";
             this.queryIfPayoff1.Size = new System.Drawing.Size(108, 25);
             this.queryIfPayoff1.TabIndex = 9;
@@ -838,7 +860,7 @@
             // 
             // queryIfCarry1
             // 
-            this.queryIfCarry1.Location = new System.Drawing.Point(102, 148);
+            this.queryIfCarry1.Location = new System.Drawing.Point(104, 180);
             this.queryIfCarry1.Name = "queryIfCarry1";
             this.queryIfCarry1.Size = new System.Drawing.Size(108, 25);
             this.queryIfCarry1.TabIndex = 7;
@@ -849,7 +871,7 @@
             // label92
             // 
             this.label92.AutoSize = true;
-            this.label92.Location = new System.Drawing.Point(8, 107);
+            this.label92.Location = new System.Drawing.Point(10, 139);
             this.label92.Name = "label92";
             this.label92.Size = new System.Drawing.Size(86, 24);
             this.label92.TabIndex = 10;
@@ -858,16 +880,25 @@
             // label91
             // 
             this.label91.AutoSize = true;
-            this.label91.Location = new System.Drawing.Point(8, 79);
+            this.label91.Location = new System.Drawing.Point(10, 111);
             this.label91.Name = "label91";
             this.label91.Size = new System.Drawing.Size(86, 24);
             this.label91.TabIndex = 10;
             this.label91.Text = "預交日期";
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(10, 11);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(86, 24);
+            this.label10.TabIndex = 10;
+            this.label10.Text = "訂單編號";
+            // 
             // label93
             // 
             this.label93.AutoSize = true;
-            this.label93.Location = new System.Drawing.Point(8, 12);
+            this.label93.Location = new System.Drawing.Point(10, 44);
             this.label93.Name = "label93";
             this.label93.Size = new System.Drawing.Size(86, 24);
             this.label93.TabIndex = 10;
@@ -876,7 +907,7 @@
             // label90
             // 
             this.label90.AutoSize = true;
-            this.label90.Location = new System.Drawing.Point(8, 48);
+            this.label90.Location = new System.Drawing.Point(10, 80);
             this.label90.Name = "label90";
             this.label90.Size = new System.Drawing.Size(86, 24);
             this.label90.TabIndex = 10;
@@ -885,7 +916,7 @@
             // queryOrderDate2
             // 
             this.queryOrderDate2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.queryOrderDate2.Location = new System.Drawing.Point(236, 47);
+            this.queryOrderDate2.Location = new System.Drawing.Point(238, 79);
             this.queryOrderDate2.Mask = "900-90-90";
             this.queryOrderDate2.Name = "queryOrderDate2";
             this.queryOrderDate2.Size = new System.Drawing.Size(108, 25);
@@ -898,7 +929,7 @@
             // queryCarryDate2
             // 
             this.queryCarryDate2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.queryCarryDate2.Location = new System.Drawing.Point(236, 108);
+            this.queryCarryDate2.Location = new System.Drawing.Point(238, 140);
             this.queryCarryDate2.Mask = "900-90-90";
             this.queryCarryDate2.Name = "queryCarryDate2";
             this.queryCarryDate2.Size = new System.Drawing.Size(108, 25);
@@ -911,7 +942,7 @@
             // queryPlanDate2
             // 
             this.queryPlanDate2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.queryPlanDate2.Location = new System.Drawing.Point(236, 78);
+            this.queryPlanDate2.Location = new System.Drawing.Point(238, 110);
             this.queryPlanDate2.Mask = "900-90-90";
             this.queryPlanDate2.Name = "queryPlanDate2";
             this.queryPlanDate2.Size = new System.Drawing.Size(108, 25);
@@ -924,7 +955,7 @@
             // queryCarryDate1
             // 
             this.queryCarryDate1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.queryCarryDate1.Location = new System.Drawing.Point(102, 108);
+            this.queryCarryDate1.Location = new System.Drawing.Point(104, 140);
             this.queryCarryDate1.Mask = "900-90-90";
             this.queryCarryDate1.Name = "queryCarryDate1";
             this.queryCarryDate1.Size = new System.Drawing.Size(108, 25);
@@ -937,7 +968,7 @@
             // queryPlanDate1
             // 
             this.queryPlanDate1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.queryPlanDate1.Location = new System.Drawing.Point(102, 78);
+            this.queryPlanDate1.Location = new System.Drawing.Point(104, 110);
             this.queryPlanDate1.Mask = "900-90-90";
             this.queryPlanDate1.Name = "queryPlanDate1";
             this.queryPlanDate1.Size = new System.Drawing.Size(108, 25);
@@ -950,7 +981,7 @@
             // queryOrderDate1
             // 
             this.queryOrderDate1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.queryOrderDate1.Location = new System.Drawing.Point(102, 47);
+            this.queryOrderDate1.Location = new System.Drawing.Point(104, 79);
             this.queryOrderDate1.Mask = "900-90-90";
             this.queryOrderDate1.Name = "queryOrderDate1";
             this.queryOrderDate1.Size = new System.Drawing.Size(108, 25);
@@ -962,6 +993,7 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.btnPrintMonthlyReport);
             this.tabPage5.Controls.Add(this.dgvQueryReport);
             this.tabPage5.Controls.Add(this.dgvReport);
             this.tabPage5.Controls.Add(this.btnUpdateReport);
@@ -973,6 +1005,17 @@
             this.tabPage5.TabIndex = 2;
             this.tabPage5.Text = "每月銷售明細";
             this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // btnPrintMonthlyReport
+            // 
+            this.btnPrintMonthlyReport.AutoSize = true;
+            this.btnPrintMonthlyReport.Location = new System.Drawing.Point(465, 2);
+            this.btnPrintMonthlyReport.Name = "btnPrintMonthlyReport";
+            this.btnPrintMonthlyReport.Size = new System.Drawing.Size(93, 34);
+            this.btnPrintMonthlyReport.TabIndex = 15;
+            this.btnPrintMonthlyReport.Text = "列印";
+            this.btnPrintMonthlyReport.UseVisualStyleBackColor = true;
+            this.btnPrintMonthlyReport.Click += new System.EventHandler(this.btnPrintMonthlyReport_Click);
             // 
             // dgvQueryReport
             // 
@@ -4448,7 +4491,7 @@
             this.rvReport.LocalReport.DataSources.Add(reportDataSource1);
             this.rvReport.LocalReport.DataSources.Add(reportDataSource2);
             this.rvReport.LocalReport.DataSources.Add(reportDataSource3);
-            this.rvReport.LocalReport.ReportEmbeddedResource = "gxxf.TicketReport.rdlc";
+            this.rvReport.LocalReport.ReportEmbeddedResource = "";
             this.rvReport.Location = new System.Drawing.Point(6, 61);
             this.rvReport.Name = "rvReport";
             this.rvReport.Size = new System.Drawing.Size(1266, 936);
@@ -4482,10 +4525,10 @@
             this.AutoScroll = true;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1284, 1009);
-            this.Controls.Add(this.panelMain);
-            this.Controls.Add(this.panelEdit);
             this.Controls.Add(this.panelPrint);
             this.Controls.Add(this.panelLogin);
+            this.Controls.Add(this.panelMain);
+            this.Controls.Add(this.panelEdit);
             this.Font = new System.Drawing.Font("Microsoft JhengHei", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.Name = "MainForm";
@@ -4506,6 +4549,7 @@
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueryTicket)).EndInit();
             this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQueryReport)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvReport)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.reportBindingSource)).EndInit();
@@ -4881,6 +4925,9 @@
         private System.Windows.Forms.Button btnParameterDelete;
         private System.Windows.Forms.Button btnParameterUpdate;
         private System.Windows.Forms.Label lbLoginPrompt;
+        private System.Windows.Forms.TextBox tbQueryTicketCode;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button btnPrintMonthlyReport;
     }
 }
 

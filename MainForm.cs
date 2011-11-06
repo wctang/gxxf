@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Data.SqlClient;
+using Microsoft.Reporting.WinForms;
 
 namespace gxxf {
     public partial class MainForm : Form {
@@ -20,17 +21,9 @@ namespace gxxf {
             InitializeComponent();
         }
 
-        private void setupParameter(ComboBox cb) {
-            cb.BindingContext = new BindingContext();
-            cb.DataSource = gxxfDataSet.Parameter;
-            cb.DisplayMember = gxxfDataSet.Parameter.ParameterNameColumn.ToString();
-            cb.SelectedIndex = -1;
-        }
-
         private void MainForm_Load(object sender, EventArgs e) {
             init = true;
         }
-
 
         private String DateToStr(DateTime d) {
             return String.Format("{0:000}-{1:00}-{2:00}", d.Year - 1911, d.Month, d.Day);
@@ -55,16 +48,37 @@ namespace gxxf {
                 return null;
             return String.Format("{0:000}-{1:00}-{2:00}", y, mm, d);
         }
-        private int ValidateMoney(String str) {
-            if (str != null && str.Trim().Length == 0)
+
+        private bool chkInt(String str) {
+            if (str == null)
+                return false;
+            String s = str.Trim();
+            if (s.Length == 0)
+                return true;
+            int r;
+            return int.TryParse(s, out r);
+        }
+        private int ToInt(String str) {
+            if (str == null)
                 return 0;
-            return Int32.Parse(str);
+            String s = str.Trim();
+            if (s.Length == 0)
+                return 0;
+            if (s.Equals("Y") || s.Equals("y"))
+                return 1;
+            if (s.Equals("N") || s.Equals("n"))
+                return 0;
+            int r;
+            return int.TryParse(s, out r) ? r : 0;
         }
         private String DrGetStr(DataRow dr, DataColumn c) {
             if (dr == null)
                 return "";
             Object o = dr[c];
             return o == null || (o is System.DBNull) ? "" : o.ToString();
+        }
+        private int DrGetInt(DataRow dr, DataColumn c) {
+            return ToInt(DrGetStr(dr, c));
         }
         private void DrGet(DataRow dr, DataColumn c, TextBox tb, bool clear = false) {
             if (clear) {
@@ -84,7 +98,16 @@ namespace gxxf {
                 cb.Enabled = (dr != null);
             }
         }
-        private bool DrChk(DataRow dr, DataColumn c, String s) {
+        private void DrGet(DataRow dr, DataColumn c, MaskedTextBox mtb) {
+            String s = ValidateDate(DrGetStr(dr, c));
+            if (s == null) {
+                mtb.Text = "";
+            } else {
+                mtb.Text = s;
+            }
+            mtb.Enabled = (dr != null);
+        }
+        private bool DrChkModified(DataRow dr, DataColumn c, String s) {
             if (dr == null)
                 return false;
             if (s != null)
@@ -96,71 +119,16 @@ namespace gxxf {
             return true;
         }
         private bool DrSet(DataRow dr, DataColumn c, String s) {
-            if (dr == null)
-                return false;
-            if (s != null)
-                s = s.Trim();
-            if (dr[c] is DBNull && (s == null || s.Length == 0))
-                return false;
-            if (dr[c].Equals(s))
-                return false;
-            dr[c] = s;
-            return true;
-        }
-        private int DrGetInt(DataRow dr, DataColumn c) {
-            if (dr == null)
-                return 0;
-            Object o = dr[c];
-            if (o == null || (o is System.DBNull))
-                return 0;
-            String s = o.ToString();
-            if (s.Length == 0)
-                return 0;
-            if (s.Equals("Y") || s.Equals("y"))
-                return 1;
-            if (s.Equals("N") || s.Equals("n"))
-                return 0;
-            try {
-                return ValidateMoney(s);
-            } catch (Exception) {
-                return 0;
-            }
+            bool r = DrChkModified(dr, c, s);
+            if (r)
+                dr[c] = s;
+            return r;
         }
         private bool DrSet(DataRow dr, DataColumn c, int i) {
-            if (dr == null)
-                return false;
-            if (dr[c].Equals(i.ToString()))
-                return false;
-            dr[c] = i;
-            return true;
+            return DrSet(dr, c, i.ToString());
         }
-        private void DrGet(DataRow dr, DataColumn c, MaskedTextBox mtb) {
-            String s = ValidateDate(DrGetStr(dr, c));
-            if (s == null) {
-                mtb.Text = "";
-            } else {
-                mtb.Text = s;
-            }
-            mtb.Enabled = (dr != null);
-        }
-        private bool checkPassword() {
-            Form prompt = new Form();
-            prompt.Width = 150;
-            prompt.Height = 90;
-            prompt.Text = "請輸入密碼";
-            TextBox textBox = new TextBox() { Left = 10, Top = 10, Width = 100, UseSystemPasswordChar = true };
-            Button confirmation = new Button() { Left = 10, Top = 30, Width = 40, Text = "Ok" };
-            confirmation.Click += (s, ee) => { prompt.Close(); };
-            prompt.Controls.Add(textBox);
-            prompt.Controls.Add(confirmation);
-            prompt.ShowDialog();
 
-            if (!textBox.Text.Equals(password)) {
-                MessageBox.Show("密碼錯誤");
-                return false;
-            }
-            return true;
-        }
+        
         private void edit_Enter(object sender, EventArgs e) {
             Control c = (Control)sender;
             c.BackColor = Color.Yellow;
@@ -195,8 +163,32 @@ namespace gxxf {
         private void edit_number_KeyPress(object sender, KeyPressEventArgs e) {
             if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && !char.IsPunctuation(e.KeyChar)) e.Handled = true;
         }
+        private bool checkPassword() {
+            Form prompt = new Form();
+            prompt.Width = 150;
+            prompt.Height = 90;
+            prompt.Text = "請輸入密碼";
+            TextBox textBox = new TextBox() { Left = 10, Top = 10, Width = 100, UseSystemPasswordChar = true };
+            Button confirmation = new Button() { Left = 10, Top = 30, Width = 40, Text = "Ok" };
+            confirmation.Click += (s, ee) => { prompt.Close(); };
+            prompt.Controls.Add(textBox);
+            prompt.Controls.Add(confirmation);
+            prompt.ShowDialog();
+
+            if (!textBox.Text.Equals(password)) {
+                MessageBox.Show("密碼錯誤");
+                return false;
+            }
+            return true;
+        }
 
         // Login
+        private void setupParameter(ComboBox cb) {
+            cb.BindingContext = new BindingContext();
+            cb.DataSource = gxxfDataSet.Parameter;
+            cb.DisplayMember = gxxfDataSet.Parameter.ParameterNameColumn.ToString();
+            cb.SelectedIndex = -1;
+        }
         private void btnLogin_Click(object sender, EventArgs e) {
             if (!tbPassword.Text.Equals(superuserpass)) {
                 SqlCommand cmd = new SqlCommand("SELECT count(*) FROM AppUser WHERE UserName = '" + tbUsername.Text + "' AND Password = '" + tbPassword.Text + "'");
@@ -251,6 +243,11 @@ namespace gxxf {
             setupParameter(cbKouZiP);
             setupParameter(cbLaLianP);
             setupParameter(cbYaoDaiP);
+
+            ReportDataSource rds = new ReportDataSource();
+            rds.Name = "Report";
+            rds.Value = reportBindingSource;
+            rvReport.LocalReport.DataSources.Add(rds);
 
             username = tbUsername.Text;
             password = tbPassword.Text;
@@ -367,6 +364,13 @@ namespace gxxf {
             if (!init)
                 return;
 
+            d = tbQueryTicketCode.Text;
+            if (d != null && d.Length > 0) {
+                if (filter.Length > 0)
+                    filter += " AND ";
+                filter += "TicketCode LIKE '" + d + "%'";
+            }
+
             d = queryCompanyName.Text;
             if (d != null && d.Length > 0) {
                 if (filter.Length > 0)
@@ -476,6 +480,10 @@ namespace gxxf {
                 ticketQueryRefresh();
             }
         }
+        private void tbQueryTicketCode_TextChanged(object sender, EventArgs e) {
+            ticketQueryRefresh();
+        }
+
 
 
         // Report
@@ -953,12 +961,9 @@ namespace gxxf {
             if (bs == null || bs.Length == 0) { MessageBox.Show("預交日期錯誤"); return false; }
             bs = ValidateDate(mtbCarryDate.Text);
             if (bs == null) { MessageBox.Show("取件日期錯誤"); return false; }
-            try {
-                ValidateMoney(tbTotalPrice.Text);
-                ValidateMoney(tbEarnest.Text);
-                ValidateMoney(tbAccountReceived.Text);
-            } catch (Exception) {
-                MessageBox.Show("金額錯誤"); return false;
+            if (!chkInt(tbTotalPrice.Text) || !chkInt(tbEarnest.Text) || !chkInt(tbAccountReceived.Text)) {
+                MessageBox.Show("金額錯誤");
+                return false;
             }
             return true;
         }
@@ -974,7 +979,7 @@ namespace gxxf {
         private bool storeCustomer(DataRow dr) {
             bool needUpdate = false;
             String nc = tbCustomerCode.Text.Trim().ToUpper();
-            if (DrChk(dr, gxxfDataSet.Customer.CustomerCodeColumn, nc)) {
+            if (DrChkModified(dr, gxxfDataSet.Customer.CustomerCodeColumn, nc)) {
                 DataRow[] drs = gxxfDataSet.Customer.Select("CustomerCode = '" + nc + "' OR CustomerCode LIKE '" + nc + "-%'");
                 if (drs.Length != 0) {
                     nc += ("-" + drs.Length);
@@ -999,9 +1004,9 @@ namespace gxxf {
             needUpdate = DrSet(dr, gxxfDataSet.Ticket.PlanDateColumn, ValidateDate(mtbPlanDate.Text)) | needUpdate;
             needUpdate = DrSet(dr, gxxfDataSet.Ticket.CarryDateColumn, ValidateDate(mtbCarryDate.Text)) | needUpdate;
             needUpdate = DrSet(dr, gxxfDataSet.Ticket.IfCarryColumn, rbIfCarry1.Checked ? 0 : 1) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.TotalPriceColumn, ValidateMoney(tbTotalPrice.Text)) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.EarnestColumn, ValidateMoney(tbEarnest.Text)) | needUpdate;
-            needUpdate = DrSet(dr, gxxfDataSet.Ticket.AccountReceivedColumn, ValidateMoney(tbAccountReceived.Text)) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.TotalPriceColumn, ToInt(tbTotalPrice.Text)) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.EarnestColumn, ToInt(tbEarnest.Text)) | needUpdate;
+            needUpdate = DrSet(dr, gxxfDataSet.Ticket.AccountReceivedColumn, ToInt(tbAccountReceived.Text)) | needUpdate;
             needUpdate = DrSet(dr, gxxfDataSet.Ticket.IfPayoffColumn, rbIfPayoff1.Checked ? 0 : 1) | needUpdate;
             needUpdate = DrSet(dr, gxxfDataSet.Ticket.CompanyNameColumn, tbTicketCompanyName.Text) | needUpdate;
             needUpdate = DrSet(dr, gxxfDataSet.Ticket.CompanyTelephoneColumn, tbTicketCompanyTelephone.Text) | needUpdate;
@@ -1281,12 +1286,14 @@ namespace gxxf {
             MessageBox.Show("刪除成功");
         }
 
-        private void btnTicketPrint_Click(object sender, EventArgs e) {
+
+        // Print
+        private void showPrintPage(String template) {
             panelMain.Visible = false;
             panelEdit.Visible = false;
             panelLogin.Visible = false;
             panelPrint.Visible = true;
-            rvReport.LocalReport.ReportEmbeddedResource = "gxxf.TicketReport.rdlc";
+            rvReport.LocalReport.ReportEmbeddedResource = template;
             rvReport.ZoomMode = Microsoft.Reporting.WinForms.ZoomMode.PageWidth;
             rvReport.SetDisplayMode(Microsoft.Reporting.WinForms.DisplayMode.PrintLayout);
             rvReport.PageCountMode = Microsoft.Reporting.WinForms.PageCountMode.Actual;
@@ -1297,22 +1304,15 @@ namespace gxxf {
             rvReport.Refresh();
             rvReport.RefreshReport();
         }
+        private void btnTicketPrint_Click(object sender, EventArgs e) {
+            showPrintPage("gxxf.TicketReport.rdlc");
+        }
 
         private void btnReportPrint_Click(object sender, EventArgs e) {
-            panelMain.Visible = false;
-            panelEdit.Visible = false;
-            panelLogin.Visible = false;
-            panelPrint.Visible = true;
-            rvReport.LocalReport.ReportEmbeddedResource = "gxxf.ReportReport.rdlc";
-            rvReport.ZoomMode = Microsoft.Reporting.WinForms.ZoomMode.PageWidth;
-            rvReport.SetDisplayMode(Microsoft.Reporting.WinForms.DisplayMode.PrintLayout);
-            rvReport.PageCountMode = Microsoft.Reporting.WinForms.PageCountMode.Actual;
-            rvReport.ShowBackButton = false;
-            rvReport.ShowFindControls = false;
-            rvReport.ShowRefreshButton = false;
-            rvReport.ShowStopButton = false;
-            rvReport.Refresh();
-            rvReport.RefreshReport();
+            showPrintPage("gxxf.ReportReport.rdlc");
+        }
+        private void btnPrintMonthlyReport_Click(object sender, EventArgs e) {
+            showPrintPage("gxxf.ReportMonthly.rdlc");
         }
 
         private void btnBack_Click(object sender, EventArgs e) {
@@ -1321,7 +1321,6 @@ namespace gxxf {
             panelLogin.Visible = false;
             panelPrint.Visible = false;
         }
-
     }
 }
 
