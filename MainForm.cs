@@ -84,6 +84,17 @@ namespace gxxf {
                 cb.Enabled = (dr != null);
             }
         }
+        private bool DrChk(DataRow dr, DataColumn c, String s) {
+            if (dr == null)
+                return false;
+            if (s != null)
+                s = s.Trim();
+            if (dr[c] is DBNull && (s == null || s.Length == 0))
+                return false;
+            if (dr[c].Equals(s))
+                return false;
+            return true;
+        }
         private bool DrSet(DataRow dr, DataColumn c, String s) {
             if (dr == null)
                 return false;
@@ -132,18 +143,6 @@ namespace gxxf {
             }
             mtb.Enabled = (dr != null);
         }
-        private void mtbDate_Validated(object sender, EventArgs e) {
-            MaskedTextBox tb = (MaskedTextBox)sender;
-            if (ValidateDate(tb.Text) == null) {
-                tb.BackColor = Color.Red;
-            } else {
-                tb.BackColor = Color.White;
-            }
-        }
-        private void mtbDate_Enter(object sender, EventArgs e) {
-            MaskedTextBox tb = (MaskedTextBox)sender;
-            tb.BackColor = Color.Yellow;
-        }
         private bool checkPassword() {
             Form prompt = new Form();
             prompt.Width = 150;
@@ -161,6 +160,40 @@ namespace gxxf {
                 return false;
             }
             return true;
+        }
+        private void edit_Enter(object sender, EventArgs e) {
+            Control c = (Control)sender;
+            c.BackColor = Color.Yellow;
+            if (c is TextBox)
+                ((TextBox)c).SelectAll();
+            if (c is MaskedTextBox) {
+                ((MaskedTextBox)c).Focus();
+                ((MaskedTextBox)c).SelectAll();
+            }
+        }
+        private void edit_Leave(object sender, EventArgs e) {
+            Control c = (Control)sender;
+            if (c.BackColor != Color.Red)
+                c.BackColor = Color.White;
+        }
+        private void edit_MouseClick(object sender, MouseEventArgs e) {
+            if (sender is TextBox)
+                ((TextBox)sender).SelectAll();
+            if (sender is MaskedTextBox) {
+                ((MaskedTextBox)sender).Focus();
+                ((MaskedTextBox)sender).SelectAll();
+            }
+        }
+        private void mtbDate_Validated(object sender, EventArgs e) {
+            MaskedTextBox tb = (MaskedTextBox)sender;
+            if (ValidateDate(tb.Text) == null) {
+                tb.BackColor = Color.Red;
+            } else {
+                tb.BackColor = Color.White;
+            }
+        }
+        private void edit_number_KeyPress(object sender, KeyPressEventArgs e) {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && !char.IsPunctuation(e.KeyChar)) e.Handled = true;
         }
 
         // Login
@@ -940,7 +973,14 @@ namespace gxxf {
         }
         private bool storeCustomer(DataRow dr) {
             bool needUpdate = false;
-            needUpdate = DrSet(dr, gxxfDataSet.Customer.CustomerCodeColumn, tbCustomerCode.Text) | needUpdate;
+            String nc = tbCustomerCode.Text.Trim().ToUpper();
+            if (DrChk(dr, gxxfDataSet.Customer.CustomerCodeColumn, nc)) {
+                DataRow[] drs = gxxfDataSet.Customer.Select("CustomerCode = '" + nc + "' OR CustomerCode LIKE '" + nc + "-%'");
+                if (drs.Length != 0) {
+                    nc += ("-" + drs.Length);
+                }
+                needUpdate = DrSet(dr, gxxfDataSet.Customer.CustomerCodeColumn, nc) | needUpdate;
+            }
             needUpdate = DrSet(dr, gxxfDataSet.Customer.CustomerNameColumn, tbCustomerName.Text) | needUpdate;
             needUpdate = DrSet(dr, gxxfDataSet.Customer.IDCardColumn, tbIDCard.Text) | needUpdate;
             needUpdate = DrSet(dr, gxxfDataSet.Customer.TelephoneColumn, tbTelephone.Text) | needUpdate;
@@ -1176,15 +1216,6 @@ namespace gxxf {
             }
         }
 
-        private void edit_Enter(object sender, EventArgs e) {
-            Control c = (Control)sender;
-            c.BackColor = Color.Yellow;
-        }
-        private void edit_Leave(object sender, EventArgs e) {
-            Control c = (Control)sender;
-            c.BackColor = Color.White;
-        }
-
 
         private void deleteTicket(DataRow dr) {
             String tid = DrGetStr(dr, this.gxxfDataSet.Ticket.TicketIdColumn);
@@ -1290,6 +1321,7 @@ namespace gxxf {
             panelLogin.Visible = false;
             panelPrint.Visible = false;
         }
+
     }
 }
 

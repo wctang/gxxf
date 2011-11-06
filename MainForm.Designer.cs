@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource13 = new Microsoft.Reporting.WinForms.ReportDataSource();
-            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource14 = new Microsoft.Reporting.WinForms.ReportDataSource();
-            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource15 = new Microsoft.Reporting.WinForms.ReportDataSource();
+            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource1 = new Microsoft.Reporting.WinForms.ReportDataSource();
+            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource2 = new Microsoft.Reporting.WinForms.ReportDataSource();
+            Microsoft.Reporting.WinForms.ReportDataSource reportDataSource3 = new Microsoft.Reporting.WinForms.ReportDataSource();
             this.ticketBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gxxfDataSet = new gxxf.gxxfDataSet();
             this.ticketJacketBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -121,6 +121,7 @@
             this.parameterTableAdapter = new gxxf.gxxfDataSetTableAdapters.ParameterTableAdapter();
             this.panelLogin = new System.Windows.Forms.Panel();
             this.btnLogin = new System.Windows.Forms.Button();
+            this.lbLoginPrompt = new System.Windows.Forms.Label();
             this.label47 = new System.Windows.Forms.Label();
             this.label46 = new System.Windows.Forms.Label();
             this.tbPassword = new System.Windows.Forms.TextBox();
@@ -371,7 +372,6 @@
             this.rvReport = new Microsoft.Reporting.WinForms.ReportViewer();
             this.panelPrint = new System.Windows.Forms.Panel();
             this.btnBack = new System.Windows.Forms.Button();
-            this.lbLoginPrompt = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ticketBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gxxfDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ticketJacketBindingSource)).BeginInit();
@@ -890,8 +890,9 @@
             this.queryOrderDate2.Name = "queryOrderDate2";
             this.queryOrderDate2.Size = new System.Drawing.Size(108, 25);
             this.queryOrderDate2.TabIndex = 2;
+            this.queryOrderDate2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.queryOrderDate2.TextChanged += new System.EventHandler(this.queryDate_TextChanged);
-            this.queryOrderDate2.Enter += new System.EventHandler(this.mtbDate_Enter);
+            this.queryOrderDate2.Enter += new System.EventHandler(this.edit_Enter);
             this.queryOrderDate2.Validated += new System.EventHandler(this.queryDate_Validated);
             // 
             // queryCarryDate2
@@ -902,8 +903,9 @@
             this.queryCarryDate2.Name = "queryCarryDate2";
             this.queryCarryDate2.Size = new System.Drawing.Size(108, 25);
             this.queryCarryDate2.TabIndex = 6;
+            this.queryCarryDate2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.queryCarryDate2.TextChanged += new System.EventHandler(this.queryDate_TextChanged);
-            this.queryCarryDate2.Enter += new System.EventHandler(this.mtbDate_Enter);
+            this.queryCarryDate2.Enter += new System.EventHandler(this.edit_Enter);
             this.queryCarryDate2.Validated += new System.EventHandler(this.queryDate_Validated);
             // 
             // queryPlanDate2
@@ -914,8 +916,9 @@
             this.queryPlanDate2.Name = "queryPlanDate2";
             this.queryPlanDate2.Size = new System.Drawing.Size(108, 25);
             this.queryPlanDate2.TabIndex = 4;
+            this.queryPlanDate2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.queryPlanDate2.TextChanged += new System.EventHandler(this.queryDate_TextChanged);
-            this.queryPlanDate2.Enter += new System.EventHandler(this.mtbDate_Enter);
+            this.queryPlanDate2.Enter += new System.EventHandler(this.edit_Enter);
             this.queryPlanDate2.Validated += new System.EventHandler(this.queryDate_Validated);
             // 
             // queryCarryDate1
@@ -926,8 +929,9 @@
             this.queryCarryDate1.Name = "queryCarryDate1";
             this.queryCarryDate1.Size = new System.Drawing.Size(108, 25);
             this.queryCarryDate1.TabIndex = 5;
+            this.queryCarryDate1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.queryCarryDate1.TextChanged += new System.EventHandler(this.queryDate_TextChanged);
-            this.queryCarryDate1.Enter += new System.EventHandler(this.mtbDate_Enter);
+            this.queryCarryDate1.Enter += new System.EventHandler(this.edit_Enter);
             this.queryCarryDate1.Validated += new System.EventHandler(this.queryDate_Validated);
             // 
             // queryPlanDate1
@@ -938,8 +942,9 @@
             this.queryPlanDate1.Name = "queryPlanDate1";
             this.queryPlanDate1.Size = new System.Drawing.Size(108, 25);
             this.queryPlanDate1.TabIndex = 3;
+            this.queryPlanDate1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.queryPlanDate1.TextChanged += new System.EventHandler(this.queryDate_TextChanged);
-            this.queryPlanDate1.Enter += new System.EventHandler(this.mtbDate_Enter);
+            this.queryPlanDate1.Enter += new System.EventHandler(this.edit_Enter);
             this.queryPlanDate1.Validated += new System.EventHandler(this.queryDate_Validated);
             // 
             // queryOrderDate1
@@ -950,8 +955,9 @@
             this.queryOrderDate1.Name = "queryOrderDate1";
             this.queryOrderDate1.Size = new System.Drawing.Size(108, 25);
             this.queryOrderDate1.TabIndex = 1;
+            this.queryOrderDate1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.queryOrderDate1.TextChanged += new System.EventHandler(this.queryDate_TextChanged);
-            this.queryOrderDate1.Enter += new System.EventHandler(this.mtbDate_Enter);
+            this.queryOrderDate1.Enter += new System.EventHandler(this.edit_Enter);
             this.queryOrderDate1.Validated += new System.EventHandler(this.queryDate_Validated);
             // 
             // tabPage5
@@ -1250,10 +1256,13 @@
             // 
             // tbParameter
             // 
+            this.tbParameter.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tbParameter.Location = new System.Drawing.Point(284, 15);
             this.tbParameter.Name = "tbParameter";
-            this.tbParameter.Size = new System.Drawing.Size(291, 32);
+            this.tbParameter.Size = new System.Drawing.Size(291, 25);
             this.tbParameter.TabIndex = 1;
+            this.tbParameter.Enter += new System.EventHandler(this.edit_Enter);
+            this.tbParameter.Leave += new System.EventHandler(this.edit_Leave);
             // 
             // customerTableAdapter
             // 
@@ -1311,6 +1320,14 @@
             this.btnLogin.UseVisualStyleBackColor = true;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
+            // lbLoginPrompt
+            // 
+            this.lbLoginPrompt.Location = new System.Drawing.Point(11, 131);
+            this.lbLoginPrompt.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.lbLoginPrompt.Name = "lbLoginPrompt";
+            this.lbLoginPrompt.Size = new System.Drawing.Size(340, 41);
+            this.lbLoginPrompt.TabIndex = 1;
+            // 
             // label47
             // 
             this.label47.AutoSize = true;
@@ -1341,6 +1358,7 @@
             this.tbPassword.TabIndex = 1;
             this.tbPassword.Text = "z4578";
             this.tbPassword.UseSystemPasswordChar = true;
+            this.tbPassword.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbPassword.Enter += new System.EventHandler(this.edit_Enter);
             this.tbPassword.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -1353,6 +1371,7 @@
             this.tbUsername.Size = new System.Drawing.Size(285, 25);
             this.tbUsername.TabIndex = 0;
             this.tbUsername.Text = "a4578";
+            this.tbUsername.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbUsername.Enter += new System.EventHandler(this.edit_Enter);
             this.tbUsername.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -2768,7 +2787,8 @@
             this.mtbCarryDate.Name = "mtbCarryDate";
             this.mtbCarryDate.Size = new System.Drawing.Size(108, 29);
             this.mtbCarryDate.TabIndex = 13;
-            this.mtbCarryDate.Enter += new System.EventHandler(this.mtbDate_Enter);
+            this.mtbCarryDate.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
+            this.mtbCarryDate.Enter += new System.EventHandler(this.edit_Enter);
             this.mtbCarryDate.Validated += new System.EventHandler(this.mtbDate_Validated);
             // 
             // mtbPlanDate
@@ -2780,7 +2800,8 @@
             this.mtbPlanDate.Name = "mtbPlanDate";
             this.mtbPlanDate.Size = new System.Drawing.Size(108, 29);
             this.mtbPlanDate.TabIndex = 12;
-            this.mtbPlanDate.Enter += new System.EventHandler(this.mtbDate_Enter);
+            this.mtbPlanDate.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
+            this.mtbPlanDate.Enter += new System.EventHandler(this.edit_Enter);
             this.mtbPlanDate.Validated += new System.EventHandler(this.mtbDate_Validated);
             // 
             // mtbOrderDate
@@ -2792,19 +2813,21 @@
             this.mtbOrderDate.Name = "mtbOrderDate";
             this.mtbOrderDate.Size = new System.Drawing.Size(108, 29);
             this.mtbOrderDate.TabIndex = 11;
-            this.mtbOrderDate.Enter += new System.EventHandler(this.mtbDate_Enter);
+            this.mtbOrderDate.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
+            this.mtbOrderDate.Enter += new System.EventHandler(this.edit_Enter);
             this.mtbOrderDate.Validated += new System.EventHandler(this.mtbDate_Validated);
             // 
             // mtbBirthday
             // 
             this.mtbBirthday.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.mtbBirthday.Location = new System.Drawing.Point(620, 87);
+            this.mtbBirthday.Location = new System.Drawing.Point(620, 88);
             this.mtbBirthday.Margin = new System.Windows.Forms.Padding(4);
             this.mtbBirthday.Mask = "900-90-90";
             this.mtbBirthday.Name = "mtbBirthday";
             this.mtbBirthday.Size = new System.Drawing.Size(108, 29);
             this.mtbBirthday.TabIndex = 4;
-            this.mtbBirthday.Enter += new System.EventHandler(this.mtbDate_Enter);
+            this.mtbBirthday.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
+            this.mtbBirthday.Enter += new System.EventHandler(this.edit_Enter);
             this.mtbBirthday.Validated += new System.EventHandler(this.mtbDate_Validated);
             // 
             // tableLayoutPanel1
@@ -3021,6 +3044,7 @@
             this.tbJianKuan.Name = "tbJianKuan";
             this.tbJianKuan.Size = new System.Drawing.Size(111, 29);
             this.tbJianKuan.TabIndex = 0;
+            this.tbJianKuan.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbJianKuan.Enter += new System.EventHandler(this.edit_Enter);
             this.tbJianKuan.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3055,6 +3079,7 @@
             this.tbShangWei.Name = "tbShangWei";
             this.tbShangWei.Size = new System.Drawing.Size(111, 29);
             this.tbShangWei.TabIndex = 2;
+            this.tbShangWei.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbShangWei.Enter += new System.EventHandler(this.edit_Enter);
             this.tbShangWei.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3067,6 +3092,7 @@
             this.tbXiaWei.Name = "tbXiaWei";
             this.tbXiaWei.Size = new System.Drawing.Size(111, 29);
             this.tbXiaWei.TabIndex = 4;
+            this.tbXiaWei.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbXiaWei.Enter += new System.EventHandler(this.edit_Enter);
             this.tbXiaWei.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3079,6 +3105,7 @@
             this.tbXiuChang.Name = "tbXiuChang";
             this.tbXiuChang.Size = new System.Drawing.Size(111, 29);
             this.tbXiuChang.TabIndex = 6;
+            this.tbXiuChang.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbXiuChang.Enter += new System.EventHandler(this.edit_Enter);
             this.tbXiuChang.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3091,6 +3118,7 @@
             this.tbXiuKou.Name = "tbXiuKou";
             this.tbXiuKou.Size = new System.Drawing.Size(111, 29);
             this.tbXiuKou.TabIndex = 8;
+            this.tbXiuKou.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbXiuKou.Enter += new System.EventHandler(this.edit_Enter);
             this.tbXiuKou.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3103,6 +3131,7 @@
             this.tbQianXiong.Name = "tbQianXiong";
             this.tbQianXiong.Size = new System.Drawing.Size(111, 29);
             this.tbQianXiong.TabIndex = 10;
+            this.tbQianXiong.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbQianXiong.Enter += new System.EventHandler(this.edit_Enter);
             this.tbQianXiong.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3115,6 +3144,7 @@
             this.tbHouBei.Name = "tbHouBei";
             this.tbHouBei.Size = new System.Drawing.Size(111, 29);
             this.tbHouBei.TabIndex = 12;
+            this.tbHouBei.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbHouBei.Enter += new System.EventHandler(this.edit_Enter);
             this.tbHouBei.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3127,6 +3157,7 @@
             this.tbShenChang.Name = "tbShenChang";
             this.tbShenChang.Size = new System.Drawing.Size(111, 29);
             this.tbShenChang.TabIndex = 14;
+            this.tbShenChang.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbShenChang.Enter += new System.EventHandler(this.edit_Enter);
             this.tbShenChang.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3139,6 +3170,7 @@
             this.tbBeiChang.Name = "tbBeiChang";
             this.tbBeiChang.Size = new System.Drawing.Size(111, 29);
             this.tbBeiChang.TabIndex = 16;
+            this.tbBeiChang.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbBeiChang.Enter += new System.EventHandler(this.edit_Enter);
             this.tbBeiChang.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3151,6 +3183,7 @@
             this.tbBeiXin.Name = "tbBeiXin";
             this.tbBeiXin.Size = new System.Drawing.Size(111, 29);
             this.tbBeiXin.TabIndex = 18;
+            this.tbBeiXin.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbBeiXin.Enter += new System.EventHandler(this.edit_Enter);
             this.tbBeiXin.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3163,6 +3196,7 @@
             this.tbLingKou.Name = "tbLingKou";
             this.tbLingKou.Size = new System.Drawing.Size(111, 29);
             this.tbLingKou.TabIndex = 20;
+            this.tbLingKou.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbLingKou.Enter += new System.EventHandler(this.edit_Enter);
             this.tbLingKou.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3447,6 +3481,7 @@
             this.tbKuYao.Name = "tbKuYao";
             this.tbKuYao.Size = new System.Drawing.Size(111, 29);
             this.tbKuYao.TabIndex = 22;
+            this.tbKuYao.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbKuYao.Enter += new System.EventHandler(this.edit_Enter);
             this.tbKuYao.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3489,6 +3524,7 @@
             this.tbYaoDai.Name = "tbYaoDai";
             this.tbYaoDai.Size = new System.Drawing.Size(111, 29);
             this.tbYaoDai.TabIndex = 42;
+            this.tbYaoDai.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbYaoDai.Enter += new System.EventHandler(this.edit_Enter);
             this.tbYaoDai.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3501,6 +3537,7 @@
             this.tbKuXiaWei.Name = "tbKuXiaWei";
             this.tbKuXiaWei.Size = new System.Drawing.Size(111, 29);
             this.tbKuXiaWei.TabIndex = 24;
+            this.tbKuXiaWei.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbKuXiaWei.Enter += new System.EventHandler(this.edit_Enter);
             this.tbKuXiaWei.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3513,6 +3550,7 @@
             this.tbKuChang.Name = "tbKuChang";
             this.tbKuChang.Size = new System.Drawing.Size(111, 29);
             this.tbKuChang.TabIndex = 26;
+            this.tbKuChang.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbKuChang.Enter += new System.EventHandler(this.edit_Enter);
             this.tbKuChang.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3525,6 +3563,7 @@
             this.tbLaLian.Name = "tbLaLian";
             this.tbLaLian.Size = new System.Drawing.Size(111, 29);
             this.tbLaLian.TabIndex = 40;
+            this.tbLaLian.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbLaLian.Enter += new System.EventHandler(this.edit_Enter);
             this.tbLaLian.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3537,6 +3576,7 @@
             this.tbZhongChang.Name = "tbZhongChang";
             this.tbZhongChang.Size = new System.Drawing.Size(111, 29);
             this.tbZhongChang.TabIndex = 28;
+            this.tbZhongChang.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbZhongChang.Enter += new System.EventHandler(this.edit_Enter);
             this.tbZhongChang.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3549,6 +3589,7 @@
             this.tbKouZi.Name = "tbKouZi";
             this.tbKouZi.Size = new System.Drawing.Size(111, 29);
             this.tbKouZi.TabIndex = 38;
+            this.tbKouZi.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbKouZi.Enter += new System.EventHandler(this.edit_Enter);
             this.tbKouZi.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3561,6 +3602,7 @@
             this.tbShangDang.Name = "tbShangDang";
             this.tbShangDang.Size = new System.Drawing.Size(111, 29);
             this.tbShangDang.TabIndex = 30;
+            this.tbShangDang.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbShangDang.Enter += new System.EventHandler(this.edit_Enter);
             this.tbShangDang.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3573,6 +3615,7 @@
             this.tbKuKou.Name = "tbKuKou";
             this.tbKuKou.Size = new System.Drawing.Size(111, 29);
             this.tbKuKou.TabIndex = 36;
+            this.tbKuKou.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbKuKou.Enter += new System.EventHandler(this.edit_Enter);
             this.tbKuKou.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3585,6 +3628,7 @@
             this.tbKaiDang.Name = "tbKaiDang";
             this.tbKaiDang.Size = new System.Drawing.Size(111, 29);
             this.tbKaiDang.TabIndex = 32;
+            this.tbKaiDang.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbKaiDang.Enter += new System.EventHandler(this.edit_Enter);
             this.tbKaiDang.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3597,6 +3641,7 @@
             this.tbZhongDang.Name = "tbZhongDang";
             this.tbZhongDang.Size = new System.Drawing.Size(111, 29);
             this.tbZhongDang.TabIndex = 34;
+            this.tbZhongDang.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbZhongDang.Enter += new System.EventHandler(this.edit_Enter);
             this.tbZhongDang.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3706,6 +3751,7 @@
             this.tbCompanyAddress.Name = "tbCompanyAddress";
             this.tbCompanyAddress.Size = new System.Drawing.Size(804, 29);
             this.tbCompanyAddress.TabIndex = 9;
+            this.tbCompanyAddress.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbCompanyAddress.Enter += new System.EventHandler(this.edit_Enter);
             this.tbCompanyAddress.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3717,6 +3763,7 @@
             this.tbCompanyTelephone.Name = "tbCompanyTelephone";
             this.tbCompanyTelephone.Size = new System.Drawing.Size(326, 29);
             this.tbCompanyTelephone.TabIndex = 8;
+            this.tbCompanyTelephone.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbCompanyTelephone.Enter += new System.EventHandler(this.edit_Enter);
             this.tbCompanyTelephone.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3728,6 +3775,7 @@
             this.tbCompanyName.Name = "tbCompanyName";
             this.tbCompanyName.Size = new System.Drawing.Size(326, 29);
             this.tbCompanyName.TabIndex = 7;
+            this.tbCompanyName.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbCompanyName.Enter += new System.EventHandler(this.edit_Enter);
             this.tbCompanyName.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3749,6 +3797,7 @@
             this.tbTelephone.Name = "tbTelephone";
             this.tbTelephone.Size = new System.Drawing.Size(326, 29);
             this.tbTelephone.TabIndex = 3;
+            this.tbTelephone.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbTelephone.Enter += new System.EventHandler(this.edit_Enter);
             this.tbTelephone.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3760,6 +3809,7 @@
             this.tbAddress.Name = "tbAddress";
             this.tbAddress.Size = new System.Drawing.Size(804, 29);
             this.tbAddress.TabIndex = 6;
+            this.tbAddress.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbAddress.Enter += new System.EventHandler(this.edit_Enter);
             this.tbAddress.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3811,6 +3861,7 @@
             this.tbCustomerName.Name = "tbCustomerName";
             this.tbCustomerName.Size = new System.Drawing.Size(326, 29);
             this.tbCustomerName.TabIndex = 1;
+            this.tbCustomerName.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbCustomerName.Enter += new System.EventHandler(this.edit_Enter);
             this.tbCustomerName.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3822,6 +3873,7 @@
             this.tbCustomerCode.Name = "tbCustomerCode";
             this.tbCustomerCode.Size = new System.Drawing.Size(326, 29);
             this.tbCustomerCode.TabIndex = 0;
+            this.tbCustomerCode.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbCustomerCode.Enter += new System.EventHandler(this.edit_Enter);
             this.tbCustomerCode.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3833,6 +3885,7 @@
             this.tbIDCard.Name = "tbIDCard";
             this.tbIDCard.Size = new System.Drawing.Size(326, 29);
             this.tbIDCard.TabIndex = 2;
+            this.tbIDCard.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbIDCard.Enter += new System.EventHandler(this.edit_Enter);
             this.tbIDCard.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3934,7 +3987,9 @@
             this.tbTicketCode.Name = "tbTicketCode";
             this.tbTicketCode.Size = new System.Drawing.Size(326, 29);
             this.tbTicketCode.TabIndex = 10;
+            this.tbTicketCode.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbTicketCode.Enter += new System.EventHandler(this.edit_Enter);
+            this.tbTicketCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.edit_number_KeyPress);
             this.tbTicketCode.Leave += new System.EventHandler(this.edit_Leave);
             // 
             // tbRemark
@@ -3945,6 +4000,7 @@
             this.tbRemark.Name = "tbRemark";
             this.tbRemark.Size = new System.Drawing.Size(804, 29);
             this.tbRemark.TabIndex = 23;
+            this.tbRemark.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbRemark.DoubleClick += new System.EventHandler(this.unmask_DoubleClick);
             this.tbRemark.Enter += new System.EventHandler(this.edit_Enter);
             this.tbRemark.Leave += new System.EventHandler(this.edit_Leave);
@@ -3957,6 +4013,7 @@
             this.tbTicketCompanyAddress.Name = "tbTicketCompanyAddress";
             this.tbTicketCompanyAddress.Size = new System.Drawing.Size(804, 29);
             this.tbTicketCompanyAddress.TabIndex = 22;
+            this.tbTicketCompanyAddress.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbTicketCompanyAddress.Enter += new System.EventHandler(this.edit_Enter);
             this.tbTicketCompanyAddress.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3968,6 +4025,7 @@
             this.tbTicketCompanyTelephone.Name = "tbTicketCompanyTelephone";
             this.tbTicketCompanyTelephone.Size = new System.Drawing.Size(326, 29);
             this.tbTicketCompanyTelephone.TabIndex = 21;
+            this.tbTicketCompanyTelephone.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbTicketCompanyTelephone.Enter += new System.EventHandler(this.edit_Enter);
             this.tbTicketCompanyTelephone.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3979,6 +4037,7 @@
             this.tbTicketCompanyName.Name = "tbTicketCompanyName";
             this.tbTicketCompanyName.Size = new System.Drawing.Size(326, 29);
             this.tbTicketCompanyName.TabIndex = 20;
+            this.tbTicketCompanyName.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbTicketCompanyName.Enter += new System.EventHandler(this.edit_Enter);
             this.tbTicketCompanyName.Leave += new System.EventHandler(this.edit_Leave);
             // 
@@ -3990,7 +4049,9 @@
             this.tbTotalPrice.Name = "tbTotalPrice";
             this.tbTotalPrice.Size = new System.Drawing.Size(326, 29);
             this.tbTotalPrice.TabIndex = 15;
+            this.tbTotalPrice.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbTotalPrice.Enter += new System.EventHandler(this.edit_Enter);
+            this.tbTotalPrice.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.edit_number_KeyPress);
             this.tbTotalPrice.Leave += new System.EventHandler(this.edit_Leave);
             // 
             // tbEarnest
@@ -4001,7 +4062,9 @@
             this.tbEarnest.Name = "tbEarnest";
             this.tbEarnest.Size = new System.Drawing.Size(326, 29);
             this.tbEarnest.TabIndex = 15;
+            this.tbEarnest.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbEarnest.Enter += new System.EventHandler(this.edit_Enter);
+            this.tbEarnest.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.edit_number_KeyPress);
             this.tbEarnest.Leave += new System.EventHandler(this.edit_Leave);
             // 
             // tbAccountReceived
@@ -4012,7 +4075,9 @@
             this.tbAccountReceived.Name = "tbAccountReceived";
             this.tbAccountReceived.Size = new System.Drawing.Size(326, 29);
             this.tbAccountReceived.TabIndex = 17;
+            this.tbAccountReceived.MouseClick += new System.Windows.Forms.MouseEventHandler(this.edit_MouseClick);
             this.tbAccountReceived.Enter += new System.EventHandler(this.edit_Enter);
+            this.tbAccountReceived.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.edit_number_KeyPress);
             this.tbAccountReceived.Leave += new System.EventHandler(this.edit_Leave);
             // 
             // panelMain
@@ -4374,15 +4439,15 @@
             // 
             // rvReport
             // 
-            reportDataSource13.Name = "Ticket";
-            reportDataSource13.Value = this.ticketBindingSource;
-            reportDataSource14.Name = "TicketJacket";
-            reportDataSource14.Value = this.ticketJacketBindingSource;
-            reportDataSource15.Name = "TicketTrousers";
-            reportDataSource15.Value = this.ticketTrousersBindingSource;
-            this.rvReport.LocalReport.DataSources.Add(reportDataSource13);
-            this.rvReport.LocalReport.DataSources.Add(reportDataSource14);
-            this.rvReport.LocalReport.DataSources.Add(reportDataSource15);
+            reportDataSource1.Name = "Ticket";
+            reportDataSource1.Value = this.ticketBindingSource;
+            reportDataSource2.Name = "TicketJacket";
+            reportDataSource2.Value = this.ticketJacketBindingSource;
+            reportDataSource3.Name = "TicketTrousers";
+            reportDataSource3.Value = this.ticketTrousersBindingSource;
+            this.rvReport.LocalReport.DataSources.Add(reportDataSource1);
+            this.rvReport.LocalReport.DataSources.Add(reportDataSource2);
+            this.rvReport.LocalReport.DataSources.Add(reportDataSource3);
             this.rvReport.LocalReport.ReportEmbeddedResource = "gxxf.TicketReport.rdlc";
             this.rvReport.Location = new System.Drawing.Point(6, 61);
             this.rvReport.Name = "rvReport";
@@ -4409,14 +4474,6 @@
             this.btnBack.Text = "返回";
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
-            // 
-            // lbLoginPrompt
-            // 
-            this.lbLoginPrompt.Location = new System.Drawing.Point(11, 131);
-            this.lbLoginPrompt.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.lbLoginPrompt.Name = "lbLoginPrompt";
-            this.lbLoginPrompt.Size = new System.Drawing.Size(340, 41);
-            this.lbLoginPrompt.TabIndex = 1;
             // 
             // MainForm
             // 
